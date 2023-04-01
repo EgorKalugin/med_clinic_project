@@ -13,7 +13,7 @@ class BasePostgresqlRepository:
         """Check if database connection is active"""
         async with self._connection.acquire() as con:
             try:
-                res = await con.fetch("SELECT 1")
+                res = await con.fetchrow("SELECT 1")
                 if res[0] == 1:
                     logger.info("%s: database connection is OK", self.__class__.__name__)
                 else:

@@ -21,7 +21,7 @@ def create_start_app_handler(app: FastAPI) -> Callable:
 def get_applictaion() -> FastAPI:
     application = FastAPI(title="Med clinic backend")
 
-    app.add_event_handler("startup", create_start_app_handler(app))
+    # application.add_event_handler("startup", create_start_app_handler(application))
     # application.include_router(router)
     return application
 

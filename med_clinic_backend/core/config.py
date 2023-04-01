@@ -2,7 +2,7 @@ from pydantic import BaseSettings, Field
 
 
 class MainPostgresDbSettings(BaseSettings):
-    host: str = Field(..., env="POSTGRES_MAIN_DB_HOST")
+    host: str = Field(..., env="POSTGRES_MAIN_DB_HOST_NAME")
     port: int = Field(..., env="POSTGRES_MAIN_DB_PORT")
     username: str = Field(..., env="MED_CLINIC_USER")
     password: str = Field(..., env="MED_CLINIC_USER_PASSWORD")

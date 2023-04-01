@@ -1,7 +1,6 @@
 version: '3.7'
 
 services:
-
   main_pg_db:
     platform: linux/amd64
     build:
@@ -13,6 +12,7 @@ services:
     # volumes:
     #   - clinic_pg_data:/var/lib/postgresql/data
     hostname: main_pg_db
+    container_name: ${POSTGRES_MAIN_DB_HOST_NAME}
     networks:
       - clinic_network
     env_file:
@@ -26,16 +26,19 @@ services:
     container_name: med_clinic_backend
     command: python -u /med_clinic_backend/main.py
     volumes:
-      - .:/med_clinic_backend
+      - ./med_clinic_backend:/med_clinic_backend
     ports:
       - 8000:8000
     depends_on:
       - main_pg_db
     networks:
       - clinic_network
+    env_file:
+      - ./.env
 
 networks:
   clinic_network:
+
 
 volumes:
   clinic_pg_data:

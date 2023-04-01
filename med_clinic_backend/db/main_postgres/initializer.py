@@ -26,9 +26,7 @@ class MainPostgresInitializer:
                 port=self._settings.port,
                 user=self._settings.username,
                 password=self._settings.password,
-                dbname=self._settings.database,
-                minsize=3,
-                maxsize=10,
+                database=self._settings.database,
             )
         return self._pg_connection_pool
 
