@@ -1,5 +1,4 @@
-FROM postgres:13
+FROM postgres:15.2
 
 COPY sql/* /docker-entrypoint-initdb.d/
-# COPY config/postgres.conf /etc/postgresql/postgres.conf
 RUN chown postgres:postgres /var/log/postgresql/
