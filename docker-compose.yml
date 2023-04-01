@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+
+  db:
+    platform: linux/amd64
+    build:
+      context: ./Postgres
+      dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+    # volumes:
+    #   - clinic_pg_data:/var/lib/postgresql/data
+    hostname: db
+    networks:
+      - clinic_network
+    env_file:
+      - ./Postgres/.env
+
+
+networks:
+  clinic_network:
+
+volumes:
+  clinic_pg_data:
