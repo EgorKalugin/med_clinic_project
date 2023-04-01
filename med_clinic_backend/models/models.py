@@ -46,7 +46,7 @@ class DoctorService(BaseModel):
 class Consumer(BaseModel):
     id: int
     bio: Optional[str]
-    date_of_birth: date
+    date_of_birth: Optional[date]
     firts_name: str
     second_name: Optional[str]
     last_name: str
@@ -61,7 +61,7 @@ class Cabinet(BaseModel):
     departament_id: Optional[int]
 
 
-class ConsumerSchedule(BaseModel):
+class AppointmentRecord(BaseModel):
     """Сущность записи на прием"""
     id: int
     consumer_id: int
