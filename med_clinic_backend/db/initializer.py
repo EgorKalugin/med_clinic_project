@@ -1,6 +1,6 @@
-from med_clinic_backend.core.config import settings as main_pg_settings
-from med_clinic_backend.db.main_postgres.initializer import MainPostgresInitializer
-from med_clinic_backend.db.main_postgres.repository import MainPgDatabaseRepository
+from core.config import settings as main_pg_settings
+from db.main_postgres.initializer import MainPostgresInitializer
+from db.main_postgres.repository import MainPgDatabaseRepository
 
 
 class Databases:

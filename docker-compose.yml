@@ -2,22 +2,37 @@ version: '3.7'
 
 services:
 
-  db:
+  main_pg_db:
     platform: linux/amd64
     build:
       context: ./Postgres
       dockerfile: Dockerfile
-    # restart: always
     ports:
       - "5432:5432"
+    # restart: always
     # volumes:
     #   - clinic_pg_data:/var/lib/postgresql/data
-    hostname: db
+    hostname: main_pg_db
     networks:
       - clinic_network
     env_file:
       - ./.env
 
+  web_app:
+    platform: linux/amd64
+    build:
+      context: ./med_clinic_backend
+      dockerfile: Dockerfile
+    container_name: med_clinic_backend
+    command: python -u /med_clinic_backend/main.py
+    volumes:
+      - .:/med_clinic_backend
+    ports:
+      - 8000:8000
+    depends_on:
+      - main_pg_db
+    networks:
+      - clinic_network
 
 networks:
   clinic_network:

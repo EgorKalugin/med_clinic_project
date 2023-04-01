@@ -3,8 +3,15 @@ from typing import Optional
 
 import asyncpg
 from db.main_postgres.base import BasePostgresqlRepository
-from med_clinic_backend.models.models import Cabinet, Departament, DoctorService, Service
-from models.models import AppointmentRecord, Consumer, Doctor
+from models.models import (
+    AppointmentRecord,
+    Cabinet,
+    Consumer,
+    Departament,
+    Doctor,
+    DoctorService,
+    Service,
+)
 
 logger = logging.getLogger("main")
 
@@ -204,12 +211,12 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         if res:
             return [DoctorService(**row) for row in res]
 
-    async def get_doctor_service_by_service_id(
-        self, service_id: int
-    ) -> Optional[DoctorService]:
+    async def get_doctor_service_by_service_id(self, service_id: int) -> Optional[DoctorService]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
-            res = await con.fetchrow("SELECT * FROM DoctorServices WHERE service_id = $1", service_id)
+            res = await con.fetchrow(
+                "SELECT * FROM DoctorServices WHERE service_id = $1", service_id
+            )
         if res:
             return DoctorService(**res)
 
