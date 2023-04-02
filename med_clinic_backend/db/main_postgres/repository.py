@@ -181,7 +181,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         if res:
             return Doctor(**res)
 
-    async def add_new_doctor(self, doctor: Doctor) -> str:
+    async def create_doctor(self, doctor: Doctor) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO Doctors
@@ -196,6 +196,28 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 doctor.second_name,
                 doctor.last_name,
                 doctor.date_of_birth,
+            )
+
+    async def update_doctor(self, doctor_id: int, doctor: Doctor) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute(
+                """UPDATE Doctors
+                SET
+                    departament_id = $1,
+                    bio = $2,
+                    firts_name = $3,
+                    second_name = $4,
+                    last_name = $5,
+                    date_of_birth = $6
+                WHERE id = $7
+                """,
+                doctor.departament_id,
+                doctor.bio,
+                doctor.firts_name,
+                doctor.second_name,
+                doctor.last_name,
+                doctor.date_of_birth,
+                doctor_id,
             )
 
     # ===================================== Services =====================================
@@ -217,7 +239,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         if res:
             return Service(**res)
 
-    async def add_new_service(self, service: Service) -> str:
+    async def create_service(self, service: Service) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO Services
@@ -229,6 +251,24 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 service.price,
                 service.description,
                 service.default_duration,
+            )
+
+    async def update_service(self, service_id: int, service: Service) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute(
+                """UPDATE Services
+                SET
+                    name = $1,
+                    price = $2,
+                    description = $3,
+                    default_duration = $4
+                WHERE id = $5
+                """,
+                service.name,
+                service.price,
+                service.description,
+                service.default_duration,
+                service_id,
             )
 
     # ===================================== Departaments =====================================
@@ -243,7 +283,14 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         if res:
             return [Departament(**row) for row in res]
 
-    async def add_new_departament(self, departament: Departament) -> str:
+    async def get_departament_by_id(self, departament_id: int) -> Optional[Departament]:
+        async with self._connection.acquire() as con:
+            con: asyncpg.Connection
+            res = await con.fetchrow("SELECT * FROM Departaments WHERE id = $1", departament_id)
+        if res:
+            return Departament(**res)
+
+    async def create_departament(self, departament: Departament) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO Departaments
@@ -274,7 +321,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         if res:
             return DoctorService(**res)
 
-    async def add_new_doctor_service(self, doctor_service: DoctorService) -> str:
+    async def create_doctor_service(self, doctor_service: DoctorService) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO DoctorServices
@@ -287,7 +334,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
             )
 
     # =========================================== Cabinet ==========================================
-    async def get_cabinets_with_pagination(
+    async def get_all_cabinets_with_pagination(
         self, end_cursor: int, amount: int = 10
     ) -> Optional[list[Cabinet]]:
         async with self._connection.acquire() as con:
@@ -305,7 +352,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         if res:
             return Cabinet(**res)
 
-    async def add_new_cabinet(self, cabinet: Cabinet) -> str:
+    async def create_cabinet(self, cabinet: Cabinet) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO Cabinets

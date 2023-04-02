@@ -21,7 +21,8 @@ async def get_consumers(
 
 @router.get("/{consumer_id}", name="Consumer:get_by_id", response_model=Consumer)
 async def get_consumer_by_id(
-    consumer_id: int, repositories: ApiRepositories = Depends(get_repositories)
+    consumer_id: int,
+    repositories: ApiRepositories = Depends(get_repositories),
 ):
     res = await repositories.main_postgres.get_consumer_by_id(consumer_id)
     if not res:
@@ -31,7 +32,8 @@ async def get_consumer_by_id(
 
 @router.post("/", name="Consumer:create", response_model=str)
 async def create_consumer(
-    consumer: Consumer, repositories: ApiRepositories = Depends(get_repositories)
+    consumer: Consumer,
+    repositories: ApiRepositories = Depends(get_repositories),
 ):
     res = await repositories.main_postgres.create_consumer(consumer)
     return res
@@ -39,7 +41,9 @@ async def create_consumer(
 
 @router.put("/{consumer_id}", name="Consumer:update", response_model=str)
 async def update_consumer(
-    consumer_id: int, consumer: Consumer, repositories: ApiRepositories = Depends(get_repositories)
+    consumer_id: int,
+    consumer: Consumer,
+    repositories: ApiRepositories = Depends(get_repositories),
 ):
     if consumer_id != consumer.id:
         raise HTTPException(status_code=400, detail="Consumer id in url and body are different")

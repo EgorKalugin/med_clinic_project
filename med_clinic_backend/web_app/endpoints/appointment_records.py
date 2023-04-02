@@ -41,7 +41,8 @@ async def get_appointment_records_by_consumer_id(
     response_model=AppointmentRecord,
 )
 async def get_appointment_record_by_id(
-    appointment_id: int, repositories: ApiRepositories = Depends(get_repositories)
+    appointment_id: int,
+    repositories: ApiRepositories = Depends(get_repositories),
 ):
     res = await repositories.main_postgres.get_appointment_record_by_id(appointment_id)
     if not res:
