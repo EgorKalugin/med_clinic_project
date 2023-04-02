@@ -3,9 +3,9 @@ from typing import Callable
 
 import uvicorn
 from fastapi import FastAPI
+from web_app.endpoints import appointment_records_router, consumers_router
 from web_app.repository import ApiRepositories, ApiRepositoriesInitializer
 from web_app.settings import settings
-from web_app.endpoints.med_clinic import router
 
 logger = logging.getLogger("main")
 
@@ -23,7 +23,10 @@ def get_applictaion() -> FastAPI:
     application = FastAPI(title="Med clinic backend")
 
     application.add_event_handler("startup", create_start_app_handler(application))
-    application.include_router(router)
+
+    application.include_router(appointment_records_router)
+    application.include_router(consumers_router)
+
     return application
 
 

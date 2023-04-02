@@ -18,7 +18,7 @@ logger = logging.getLogger("main")
 
 class MainPgDatabaseRepository(BasePostgresqlRepository):
     # ===================================== AppointmentRecords =====================================
-    async def get_all_appointments_with_pagination(
+    async def get_all_appointment_records_with_pagination(
         self, end_cursor: int, amount: int = 10
     ) -> Optional[list[AppointmentRecord]]:
         async with self._connection.acquire() as con:
@@ -52,7 +52,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         if res:
             return AppointmentRecord(**res)
 
-    async def add_new_appointment_record(self, appointment: AppointmentRecord) -> str:
+    async def create_appointment_record(self, appointment: AppointmentRecord) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO AppointmentRecords
@@ -69,6 +69,34 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 appointment.price,
                 appointment.state,
                 appointment.cabinet_number,
+            )
+
+    async def update_appointment_record(
+        self, appointment_id: int, appointment: AppointmentRecord
+    ) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute(
+                """UPDATE AppointmentRecords
+                SET
+                    consumer_id = $1,
+                    doctor_id = $2,
+                    service_id = $3,
+                    start_time = $4,
+                    end_time = $5,
+                    price = $6,
+                    state = $7,
+                    cabinet_number = $8
+                WHERE id = $9
+                """,
+                appointment.consumer_id,
+                appointment.doctor_id,
+                appointment.service_id,
+                appointment.start_time,
+                appointment.end_time,
+                appointment.price,
+                appointment.state,
+                appointment.cabinet_number,
+                appointment_id,
             )
 
     # ======================================== Consumers ===========================================
@@ -89,7 +117,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         if res:
             return Consumer(**res)
 
-    async def add_new_consumer(self, consumer: Consumer) -> str:
+    async def create_consumer(self, consumer: Consumer) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO Consumers
@@ -106,6 +134,32 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 consumer.phone_number,
                 consumer.email,
                 consumer.individual_sale,
+            )
+
+    async def update_consumer(self, consumer_id: int, consumer: Consumer) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute(
+                """UPDATE Consumers
+                SET
+                    bio = $1,
+                    date_of_birth = $2,
+                    firts_name = $3,
+                    second_name = $4,
+                    last_name = $5,
+                    phone_number = $6,
+                    email = $7,
+                    individual_sale = $8
+                WHERE id = $9
+                """,
+                consumer.bio,
+                consumer.date_of_birth,
+                consumer.firts_name,
+                consumer.second_name,
+                consumer.last_name,
+                consumer.phone_number,
+                consumer.email,
+                consumer.individual_sale,
+                consumer_id,
             )
 
     # ===================================== Doctors =====================================
