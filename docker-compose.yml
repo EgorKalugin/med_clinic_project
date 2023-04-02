@@ -24,7 +24,6 @@ services:
       context: ./med_clinic_backend
       dockerfile: Dockerfile
     container_name: med_clinic_backend
-    command: python -u /med_clinic_backend/main.py
     volumes:
       - ./med_clinic_backend:/med_clinic_backend
     ports:

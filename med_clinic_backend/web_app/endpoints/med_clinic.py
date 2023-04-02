@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from models.models import AppointmentRecord
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories
@@ -15,6 +15,7 @@ async def get_appointment_record(
     end_cursor: int = 0,
     amount: int = 10,
 ):
-    return await repositories.main_postgres.get_all_appointments_with_pagination(
-        end_cursor, amount
-    )
+    res = await repositories.main_postgres.get_all_appointments_with_pagination(end_cursor, amount)
+    if not res:
+        raise HTTPException(status_code=404, detail="No appointment records found")
+    return res

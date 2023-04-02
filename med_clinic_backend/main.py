@@ -5,6 +5,7 @@ import uvicorn
 from fastapi import FastAPI
 from web_app.repository import ApiRepositories, ApiRepositoriesInitializer
 from web_app.settings import settings
+from web_app.endpoints.med_clinic import router
 
 logger = logging.getLogger("main")
 
@@ -21,12 +22,12 @@ def create_start_app_handler(app: FastAPI) -> Callable:
 def get_applictaion() -> FastAPI:
     application = FastAPI(title="Med clinic backend")
 
-    # application.add_event_handler("startup", create_start_app_handler(application))
-    # application.include_router(router)
+    application.add_event_handler("startup", create_start_app_handler(application))
+    application.include_router(router)
     return application
 
 
 app = get_applictaion()
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", port=8000, host="localhost", reload=True)
+    uvicorn.run("main:app", port=8000, host="0.0.0.0", reload=True)
