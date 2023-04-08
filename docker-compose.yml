@@ -18,7 +18,7 @@ services:
     env_file:
       - ./.env
 
-  web_app:
+  med_clinic_backend:
     platform: linux/amd64
     build:
       context: ./med_clinic_backend
@@ -34,6 +34,24 @@ services:
       - clinic_network
     env_file:
       - ./.env
+
+  med_clinic_frontend:
+    platform: linux/amd64
+    build:
+      context: ./med_clinic_frontend
+      dockerfile: Dockerfile
+    container_name: med_clinic_frontend
+    volumes:
+      - ./med_clinic_frontend:/med_clinic_frontend
+    ports:
+      - 3000:3000
+    depends_on:
+      - med_clinic_backend
+    networks:
+      - clinic_network
+    env_file:
+      - ./.env
+
 
 networks:
   clinic_network:
