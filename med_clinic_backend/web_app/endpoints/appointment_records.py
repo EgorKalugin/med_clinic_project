@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from models.models import AppointmentRecordWithID
+from models.models import AppointmentRecordWithId, AppointmentRecordWithoutId
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories
 
 router = APIRouter(prefix="/appointment_record", tags=["appointment_record"])
 
 
-@router.get("/", name="AppointmentRecord:get", response_model=list[AppointmentRecordWithID])
+@router.get("/", name="AppointmentRecord:get", response_model=list[AppointmentRecordWithId])
 async def get_appointment_record(
     end_cursor: int = 0,
     amount: int = 10,
@@ -23,7 +23,7 @@ async def get_appointment_record(
 @router.get(
     "/by_consumer_id/{consumer_id}",
     name="AppointmentRecord:get_by_consumer_id",
-    response_model=list[AppointmentRecordWithID],
+    response_model=list[AppointmentRecordWithId],
 )
 async def get_appointment_records_by_consumer_id(
     consumer_id: int,
@@ -38,7 +38,7 @@ async def get_appointment_records_by_consumer_id(
 @router.get(
     "/{appointment_id}",
     name="AppointmentRecord:get_by_id",
-    response_model=AppointmentRecordWithID,
+    response_model=AppointmentRecordWithId,
 )
 async def get_appointment_record_by_id(
     appointment_id: int,
@@ -52,7 +52,7 @@ async def get_appointment_record_by_id(
 
 @router.post("/", name="AppointmentRecord:create", response_model=str)
 async def create_appointment_record(
-    appointment_record: AppointmentRecordWithID,
+    appointment_record: AppointmentRecordWithoutId,
     repositories: ApiRepositories = Depends(get_repositories),
 ):
     res = await repositories.main_postgres.create_appointment_record(appointment_record)
@@ -62,7 +62,7 @@ async def create_appointment_record(
 @router.put("/{appointment_id}", name="AppointmentRecord:update", response_model=str)
 async def update_appointment_record(
     appointment_id: int,
-    appointment_record: AppointmentRecordWithID,
+    appointment_record: AppointmentRecordWithId,
     repositories: ApiRepositories = Depends(get_repositories),
 ):
     if appointment_id != appointment_record.id:

@@ -4,13 +4,17 @@ from typing import Optional
 import asyncpg
 from db.main_postgres.base import BasePostgresqlRepository
 from models.models import (
-    AppointmentRecordWithID,
+    AppointmentRecordWithId,
+    AppointmentRecordWithoutId,
     Cabinet,
     ConsumerWithId,
-    ConsumerWithoutID,
+    ConsumerWithoutId,
     DepartamentWithId,
-    DoctorWithID,
+    DepartamentWithoutId,
     DoctorServiceWithId,
+    DoctorServiceWithoutId,
+    DoctorWithId,
+    DoctorWithoutId,
     ServiceWithId,
 )
 
@@ -21,7 +25,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     # ===================================== AppointmentRecords =====================================
     async def get_all_appointment_records_with_pagination(
         self, end_cursor: int, amount: int = 10
-    ) -> Optional[list[AppointmentRecordWithID]]:
+    ) -> Optional[list[AppointmentRecordWithId]]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetch(
@@ -30,30 +34,30 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 end_cursor,
             )
         if res:
-            return [AppointmentRecordWithID(**row) for row in res]
+            return [AppointmentRecordWithId(**row) for row in res]
 
     async def get_appointment_records_by_consumer_id(
         self, consumer_id: int
-    ) -> Optional[list[AppointmentRecordWithID]]:
+    ) -> Optional[list[AppointmentRecordWithId]]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetch(
                 "SELECT * FROM AppointmentRecords WHERE consumer_id = $1", consumer_id
             )
         if res:
-            return [AppointmentRecordWithID(**row) for row in res]
+            return [AppointmentRecordWithId(**row) for row in res]
 
     async def get_appointment_record_by_id(
         self, appointment_id: int
-    ) -> Optional[AppointmentRecordWithID]:
+    ) -> Optional[AppointmentRecordWithId]:
         async with self._connection.acquire() as con:
             res = await con.fetchrow(
                 "SELECT * FROM AppointmentRecords WHERE id = $1", appointment_id
             )
         if res:
-            return AppointmentRecordWithID(**res)
+            return AppointmentRecordWithId(**res)
 
-    async def create_appointment_record(self, appointment: AppointmentRecordWithID) -> str:
+    async def create_appointment_record(self, appointment: AppointmentRecordWithoutId) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO AppointmentRecords
@@ -73,7 +77,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
             )
 
     async def update_appointment_record(
-        self, appointment_id: int, appointment: AppointmentRecordWithID
+        self, appointment_id: int, appointment: AppointmentRecordWithId
     ) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
@@ -118,7 +122,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         if res:
             return ConsumerWithId(**res)
 
-    async def create_consumer(self, consumer: ConsumerWithoutID) -> str:
+    async def create_consumer(self, consumer: ConsumerWithoutId) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO Consumers
@@ -166,23 +170,23 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     # ===================================== Doctors =====================================
     async def get_all_doctors_with_pagination(
         self, end_cursor: int, amount: int = 10
-    ) -> Optional[list[DoctorWithID]]:
+    ) -> Optional[list[DoctorWithId]]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetch(
                 "SELECT * FROM Doctors ORDER BY id LIMIT $1 OFFSET $2", amount, end_cursor
             )
         if res:
-            return [DoctorWithID(**row) for row in res]
+            return [DoctorWithId(**row) for row in res]
 
-    async def get_doctor_by_id(self, doctor_id: int) -> Optional[DoctorWithID]:
+    async def get_doctor_by_id(self, doctor_id: int) -> Optional[DoctorWithId]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetchrow("SELECT * FROM Doctors WHERE id = $1", doctor_id)
         if res:
-            return DoctorWithID(**res)
+            return DoctorWithId(**res)
 
-    async def create_doctor(self, doctor: DoctorWithID) -> str:
+    async def create_doctor(self, doctor: DoctorWithoutId) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO Doctors
@@ -199,7 +203,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 doctor.date_of_birth,
             )
 
-    async def update_doctor(self, doctor_id: int, doctor: DoctorWithID) -> str:
+    async def update_doctor(self, doctor_id: int, doctor: DoctorWithId) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """UPDATE Doctors
@@ -291,7 +295,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         if res:
             return DepartamentWithId(**res)
 
-    async def create_departament(self, departament: DepartamentWithId) -> str:
+    async def create_departament(self, departament: DepartamentWithoutId) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO Departaments
@@ -313,7 +317,9 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         if res:
             return [DoctorServiceWithId(**row) for row in res]
 
-    async def get_doctor_service_by_service_id(self, service_id: int) -> Optional[DoctorServiceWithId]:
+    async def get_doctor_service_by_service_id(
+        self, service_id: int
+    ) -> Optional[DoctorServiceWithId]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetchrow(
@@ -322,7 +328,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         if res:
             return DoctorServiceWithId(**res)
 
-    async def create_doctor_service(self, doctor_service: DoctorServiceWithId) -> str:
+    async def create_doctor_service(self, doctor_service: DoctorServiceWithoutId) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO DoctorServices

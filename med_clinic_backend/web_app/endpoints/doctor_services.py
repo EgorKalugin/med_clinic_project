@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from models.models import DoctorServiceWithId
+from models.models import DoctorServiceWithId, DoctorServiceWithoutId
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories
 
@@ -32,7 +32,7 @@ async def get_doctor_service_by_id(
 
 @router.post("/", name="DoctorService:create", response_model=str)
 async def create_doctor_service(
-    doctor_service: DoctorServiceWithId,
+    doctor_service: DoctorServiceWithoutId,
     repositories: ApiRepositories = Depends(get_repositories),
 ) -> str:
     res = await repositories.main_postgres.create_doctor_service(doctor_service)

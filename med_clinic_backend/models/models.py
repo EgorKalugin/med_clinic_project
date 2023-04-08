@@ -13,7 +13,7 @@ class ScheduleStates(Enum):
     NOT_ARRIVED = "not_arrived"
 
 
-class DoctorWithoutID(BaseModel):
+class DoctorWithoutId(BaseModel):
     departament_id: int
     bio: Optional[str]
     first_name: str
@@ -22,7 +22,7 @@ class DoctorWithoutID(BaseModel):
     date_of_birth: date
 
 
-class DoctorWithID(DoctorWithoutID):
+class DoctorWithId(DoctorWithoutId):
     id: int
 
 
@@ -55,7 +55,7 @@ class DoctorServiceWithId(DoctorServiceWithoutId):
     id: int
 
 
-class ConsumerWithoutID(BaseModel):
+class ConsumerWithoutId(BaseModel):
     bio: Optional[str]
     date_of_birth: Optional[date]
     first_name: str
@@ -66,7 +66,7 @@ class ConsumerWithoutID(BaseModel):
     individual_sale: Optional[Decimal]
 
 
-class ConsumerWithId(ConsumerWithoutID):
+class ConsumerWithId(ConsumerWithoutId):
     id: int
 
 
@@ -76,9 +76,8 @@ class Cabinet(BaseModel):
     departament_id: Optional[int]
 
 
-class AppointmentRecordWithoutID(BaseModel):
+class AppointmentRecordWithoutId(BaseModel):
     """Сущность записи на прием"""
-
     consumer_id: int
     doctor_id: int
     service_id: int
@@ -89,5 +88,5 @@ class AppointmentRecordWithoutID(BaseModel):
     cabinet_number: int
 
 
-class AppointmentRecordWithID(AppointmentRecordWithoutID):
+class AppointmentRecordWithId(AppointmentRecordWithoutId):
     id: int

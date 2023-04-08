@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from models.models import ConsumerWithId, ConsumerWithoutID
+from models.models import ConsumerWithId, ConsumerWithoutId
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories
 
@@ -31,7 +31,7 @@ async def get_consumer_by_id(
 
 @router.post("/", name="Consumer:create", response_model=str)
 async def create_consumer(
-    consumer: ConsumerWithoutID,
+    consumer: ConsumerWithoutId,
     repositories: ApiRepositories = Depends(get_repositories),
 ):
     res = await repositories.main_postgres.create_consumer(consumer)
