@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from models.models import Service
+from models.models import ServiceWithId
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories
 
 router = APIRouter(prefix="/services", tags=["service"])
 
 
-@router.get("/", name="Service:get", response_model=list[Service])
+@router.get("/", name="Service:get", response_model=list[ServiceWithId])
 async def get_service(
     end_cursor: int = 0,
     amount: int = 10,
@@ -18,7 +18,7 @@ async def get_service(
     return res
 
 
-@router.get("/{service_id}", name="Service:get_by_id", response_model=Service)
+@router.get("/{service_id}", name="Service:get_by_id", response_model=ServiceWithId)
 async def get_service_by_id(
     service_id: int,
     repositories: ApiRepositories = Depends(get_repositories),
@@ -31,7 +31,7 @@ async def get_service_by_id(
 
 @router.post("/", name="Service:create", response_model=str)
 async def create_service(
-    service: Service,
+    service: ServiceWithId,
     repositories: ApiRepositories = Depends(get_repositories),
 ):
     res = await repositories.main_postgres.create_service(service)
@@ -41,7 +41,7 @@ async def create_service(
 @router.put("/{service_id}", name="Service:update", response_model=str)
 async def update_service(
     service_id: int,
-    service: Service,
+    service: ServiceWithId,
     repositories: ApiRepositories = Depends(get_repositories),
 ):
     if service_id != service.id:

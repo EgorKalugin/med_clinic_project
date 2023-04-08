@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from models.models import Consumer
+from models.models import ConsumerWithId, ConsumerWithoutID
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories
 
 router = APIRouter(prefix="/consumer", tags=["consumer"])
 
 
-@router.get("/", name="Consumer:get", response_model=list[Consumer])
+@router.get("/", name="Consumer:get", response_model=list[ConsumerWithId])
 async def get_consumers(
     end_cursor: int = 0,
     amount: int = 10,
@@ -18,7 +18,7 @@ async def get_consumers(
     return res
 
 
-@router.get("/{consumer_id}", name="Consumer:get_by_id", response_model=Consumer)
+@router.get("/{consumer_id}", name="Consumer:get_by_id", response_model=ConsumerWithId)
 async def get_consumer_by_id(
     consumer_id: int,
     repositories: ApiRepositories = Depends(get_repositories),
@@ -31,7 +31,7 @@ async def get_consumer_by_id(
 
 @router.post("/", name="Consumer:create", response_model=str)
 async def create_consumer(
-    consumer: Consumer,
+    consumer: ConsumerWithoutID,
     repositories: ApiRepositories = Depends(get_repositories),
 ):
     res = await repositories.main_postgres.create_consumer(consumer)
@@ -41,7 +41,7 @@ async def create_consumer(
 @router.put("/{consumer_id}", name="Consumer:update", response_model=str)
 async def update_consumer(
     consumer_id: int,
-    consumer: Consumer,
+    consumer: ConsumerWithId,
     repositories: ApiRepositories = Depends(get_repositories),
 ):
     if consumer_id != consumer.id:

@@ -13,46 +13,61 @@ class ScheduleStates(Enum):
     NOT_ARRIVED = "not_arrived"
 
 
-class Doctor(BaseModel):
-    id: int
+class DoctorWithoutID(BaseModel):
     departament_id: int
     bio: Optional[str]
-    firts_name: str
+    first_name: str
     second_name: Optional[str]
     last_name: str
     date_of_birth: date
 
 
-class Service(BaseModel):
+class DoctorWithID(DoctorWithoutID):
     id: int
+
+
+class ServiceWithoutId(BaseModel):
     name: str
     description: Optional[str]
     price: Decimal
     default_duration: time
 
 
-class Departament(BaseModel):
+class ServiceWithId(ServiceWithoutId):
     id: int
+
+
+class DepartamentWithoutId(BaseModel):
     name: str
     description: Optional[str]
 
 
-class DoctorService(BaseModel):
+class DepartamentWithId(DepartamentWithoutId):
     id: int
+
+
+class DoctorServiceWithoutId(BaseModel):
     doctor_id: int
     service_id: int
 
 
-class Consumer(BaseModel):
+class DoctorServiceWithId(DoctorServiceWithoutId):
     id: int
+
+
+class ConsumerWithoutID(BaseModel):
     bio: Optional[str]
     date_of_birth: Optional[date]
-    firts_name: str
+    first_name: str
     second_name: Optional[str]
     last_name: str
     phone_number: Optional[str]
     email: Optional[str]
     individual_sale: Optional[Decimal]
+
+
+class ConsumerWithId(ConsumerWithoutID):
+    id: int
 
 
 class Cabinet(BaseModel):
@@ -61,9 +76,9 @@ class Cabinet(BaseModel):
     departament_id: Optional[int]
 
 
-class AppointmentRecord(BaseModel):
+class AppointmentRecordWithoutID(BaseModel):
     """Сущность записи на прием"""
-    id: int
+
     consumer_id: int
     doctor_id: int
     service_id: int
@@ -72,3 +87,7 @@ class AppointmentRecord(BaseModel):
     price: Decimal
     state: ScheduleStates
     cabinet_number: int
+
+
+class AppointmentRecordWithID(AppointmentRecordWithoutID):
+    id: int

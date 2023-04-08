@@ -4,13 +4,14 @@ from typing import Optional
 import asyncpg
 from db.main_postgres.base import BasePostgresqlRepository
 from models.models import (
-    AppointmentRecord,
+    AppointmentRecordWithID,
     Cabinet,
-    Consumer,
-    Departament,
-    Doctor,
-    DoctorService,
-    Service,
+    ConsumerWithId,
+    ConsumerWithoutID,
+    DepartamentWithId,
+    DoctorWithID,
+    DoctorServiceWithId,
+    ServiceWithId,
 )
 
 logger = logging.getLogger("main")
@@ -20,7 +21,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     # ===================================== AppointmentRecords =====================================
     async def get_all_appointment_records_with_pagination(
         self, end_cursor: int, amount: int = 10
-    ) -> Optional[list[AppointmentRecord]]:
+    ) -> Optional[list[AppointmentRecordWithID]]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetch(
@@ -29,30 +30,30 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 end_cursor,
             )
         if res:
-            return [AppointmentRecord(**row) for row in res]
+            return [AppointmentRecordWithID(**row) for row in res]
 
     async def get_appointment_records_by_consumer_id(
         self, consumer_id: int
-    ) -> Optional[list[AppointmentRecord]]:
+    ) -> Optional[list[AppointmentRecordWithID]]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetch(
                 "SELECT * FROM AppointmentRecords WHERE consumer_id = $1", consumer_id
             )
         if res:
-            return [AppointmentRecord(**row) for row in res]
+            return [AppointmentRecordWithID(**row) for row in res]
 
     async def get_appointment_record_by_id(
         self, appointment_id: int
-    ) -> Optional[AppointmentRecord]:
+    ) -> Optional[AppointmentRecordWithID]:
         async with self._connection.acquire() as con:
             res = await con.fetchrow(
                 "SELECT * FROM AppointmentRecords WHERE id = $1", appointment_id
             )
         if res:
-            return AppointmentRecord(**res)
+            return AppointmentRecordWithID(**res)
 
-    async def create_appointment_record(self, appointment: AppointmentRecord) -> str:
+    async def create_appointment_record(self, appointment: AppointmentRecordWithID) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO AppointmentRecords
@@ -72,7 +73,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
             )
 
     async def update_appointment_record(
-        self, appointment_id: int, appointment: AppointmentRecord
+        self, appointment_id: int, appointment: AppointmentRecordWithID
     ) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
@@ -102,33 +103,33 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     # ======================================== Consumers ===========================================
     async def get_all_consumers_with_pagination(
         self, end_cursor: int, amount: int = 10
-    ) -> Optional[list[Consumer]]:
+    ) -> Optional[list[ConsumerWithId]]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetch(
                 "SELECT * FROM Consumers ORDER BY id LIMIT $1 OFFSET $2", amount, end_cursor
             )
         if res:
-            return [Consumer(**row) for row in res]
+            return [ConsumerWithId(**row) for row in res]
 
-    async def get_consumer_by_id(self, consumer_id: int) -> Optional[Consumer]:
+    async def get_consumer_by_id(self, consumer_id: int) -> Optional[ConsumerWithId]:
         async with self._connection.acquire() as con:
             res = await con.fetchrow("SELECT * FROM Consumers WHERE id = $1", consumer_id)
         if res:
-            return Consumer(**res)
+            return ConsumerWithId(**res)
 
-    async def create_consumer(self, consumer: Consumer) -> str:
+    async def create_consumer(self, consumer: ConsumerWithoutID) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO Consumers
-                    (bio, date_of_birth, firts_name, second_name, last_name,
+                    (bio, date_of_birth, first_name, second_name, last_name,
                     phone_number, email, individual_sale)
                 VALUES
                     ($1, $2, $3, $4, $5, $6, $7, $8)
                 """,
                 consumer.bio,
                 consumer.date_of_birth,
-                consumer.firts_name,
+                consumer.first_name,
                 consumer.second_name,
                 consumer.last_name,
                 consumer.phone_number,
@@ -136,14 +137,14 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 consumer.individual_sale,
             )
 
-    async def update_consumer(self, consumer_id: int, consumer: Consumer) -> str:
+    async def update_consumer(self, consumer_id: int, consumer: ConsumerWithId) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """UPDATE Consumers
                 SET
                     bio = $1,
                     date_of_birth = $2,
-                    firts_name = $3,
+                    first_name = $3,
                     second_name = $4,
                     last_name = $5,
                     phone_number = $6,
@@ -153,7 +154,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 """,
                 consumer.bio,
                 consumer.date_of_birth,
-                consumer.firts_name,
+                consumer.first_name,
                 consumer.second_name,
                 consumer.last_name,
                 consumer.phone_number,
@@ -165,47 +166,47 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     # ===================================== Doctors =====================================
     async def get_all_doctors_with_pagination(
         self, end_cursor: int, amount: int = 10
-    ) -> Optional[list[Doctor]]:
+    ) -> Optional[list[DoctorWithID]]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetch(
                 "SELECT * FROM Doctors ORDER BY id LIMIT $1 OFFSET $2", amount, end_cursor
             )
         if res:
-            return [Doctor(**row) for row in res]
+            return [DoctorWithID(**row) for row in res]
 
-    async def get_doctor_by_id(self, doctor_id: int) -> Optional[Doctor]:
+    async def get_doctor_by_id(self, doctor_id: int) -> Optional[DoctorWithID]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetchrow("SELECT * FROM Doctors WHERE id = $1", doctor_id)
         if res:
-            return Doctor(**res)
+            return DoctorWithID(**res)
 
-    async def create_doctor(self, doctor: Doctor) -> str:
+    async def create_doctor(self, doctor: DoctorWithID) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO Doctors
-                    (departament_id, bio, firts_name, second_name, last_name,
+                    (departament_id, bio, first_name, second_name, last_name,
                     date_of_birth)
                 VALUES
                     ($1, $2, $3, $4, $5, $6)
                 """,
                 doctor.departament_id,
                 doctor.bio,
-                doctor.firts_name,
+                doctor.first_name,
                 doctor.second_name,
                 doctor.last_name,
                 doctor.date_of_birth,
             )
 
-    async def update_doctor(self, doctor_id: int, doctor: Doctor) -> str:
+    async def update_doctor(self, doctor_id: int, doctor: DoctorWithID) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """UPDATE Doctors
                 SET
                     departament_id = $1,
                     bio = $2,
-                    firts_name = $3,
+                    first_name = $3,
                     second_name = $4,
                     last_name = $5,
                     date_of_birth = $6
@@ -213,7 +214,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 """,
                 doctor.departament_id,
                 doctor.bio,
-                doctor.firts_name,
+                doctor.first_name,
                 doctor.second_name,
                 doctor.last_name,
                 doctor.date_of_birth,
@@ -223,23 +224,23 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     # ===================================== Services =====================================
     async def get_all_services_with_pagination(
         self, end_cursor: int, amount: int = 10
-    ) -> Optional[list[Service]]:
+    ) -> Optional[list[ServiceWithId]]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetch(
                 "SELECT * FROM Services ORDER BY id LIMIT $1 OFFSET $2", amount, end_cursor
             )
         if res:
-            return [Service(**row) for row in res]
+            return [ServiceWithId(**row) for row in res]
 
-    async def get_service_by_id(self, service_id: int) -> Optional[Service]:
+    async def get_service_by_id(self, service_id: int) -> Optional[ServiceWithId]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetchrow("SELECT * FROM Services WHERE id = $1", service_id)
         if res:
-            return Service(**res)
+            return ServiceWithId(**res)
 
-    async def create_service(self, service: Service) -> str:
+    async def create_service(self, service: ServiceWithId) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO Services
@@ -253,7 +254,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 service.default_duration,
             )
 
-    async def update_service(self, service_id: int, service: Service) -> str:
+    async def update_service(self, service_id: int, service: ServiceWithId) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """UPDATE Services
@@ -274,23 +275,23 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     # ===================================== Departaments =====================================
     async def get_all_departaments_with_pagination(
         self, end_cursor: int, amount: int = 10
-    ) -> Optional[list[Departament]]:
+    ) -> Optional[list[DepartamentWithId]]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetch(
                 "SELECT * FROM Departaments ORDER BY id LIMIT $1 OFFSET $2", amount, end_cursor
             )
         if res:
-            return [Departament(**row) for row in res]
+            return [DepartamentWithId(**row) for row in res]
 
-    async def get_departament_by_id(self, departament_id: int) -> Optional[Departament]:
+    async def get_departament_by_id(self, departament_id: int) -> Optional[DepartamentWithId]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetchrow("SELECT * FROM Departaments WHERE id = $1", departament_id)
         if res:
-            return Departament(**res)
+            return DepartamentWithId(**res)
 
-    async def create_departament(self, departament: Departament) -> str:
+    async def create_departament(self, departament: DepartamentWithId) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO Departaments
@@ -305,23 +306,23 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     # ===================================== DoctorService =====================================
     async def get_doctor_services_by_doctor_id(
         self, doctor_id: int
-    ) -> Optional[list[DoctorService]]:
+    ) -> Optional[list[DoctorServiceWithId]]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetch("SELECT * FROM DoctorServices WHERE doctor_id = $1", doctor_id)
         if res:
-            return [DoctorService(**row) for row in res]
+            return [DoctorServiceWithId(**row) for row in res]
 
-    async def get_doctor_service_by_service_id(self, service_id: int) -> Optional[DoctorService]:
+    async def get_doctor_service_by_service_id(self, service_id: int) -> Optional[DoctorServiceWithId]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetchrow(
                 "SELECT * FROM DoctorServices WHERE service_id = $1", service_id
             )
         if res:
-            return DoctorService(**res)
+            return DoctorServiceWithId(**res)
 
-    async def create_doctor_service(self, doctor_service: DoctorService) -> str:
+    async def create_doctor_service(self, doctor_service: DoctorServiceWithId) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO DoctorServices

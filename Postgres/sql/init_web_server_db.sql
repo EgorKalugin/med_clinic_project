@@ -15,7 +15,7 @@ CREATE EXTENSION btree_gist; -- for EXCLUDE constraint
 
 -- create tables
 CREATE TABLE Consumers(
-    id BIGINT NOT NULL PRIMARY KEY,
+    id SERIAL NOT NULL PRIMARY KEY,
     bio TEXT NULL,
     date_of_birth TIMESTAMP(0) WITHOUT TIME ZONE NULL,
     first_name VARCHAR(30) NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE Consumers(
 );
 
 CREATE TABLE Services(
-    id INTEGER NOT NULL PRIMARY KEY,
+    id SERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(30) NOT NULL,
     description TEXT NULL,
     price DECIMAL(8, 2) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE Services(
 );
 
 CREATE TABLE Departaments(
-    id INTEGER NOT NULL PRIMARY KEY,
+    id SERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT NULL
 );
@@ -47,7 +47,7 @@ CREATE TABLE Cabinets(
 );
 
 CREATE TABLE Doctors(
-    id INTEGER NOT NULL PRIMARY KEY,
+    id SERIAL NOT NULL PRIMARY KEY,
     departament_id INTEGER NOT NULL REFERENCES Departaments(id),
     bio TEXT NULL,
     first_name VARCHAR(30) NOT NULL,
@@ -57,8 +57,8 @@ CREATE TABLE Doctors(
 );
 
 CREATE TABLE AppointmentRecords(
-    id BIGINT NOT NULL PRIMARY KEY,
-    consumer_id BIGINT NOT NULL REFERENCES Consumers(id),
+    id SERIAL NOT NULL PRIMARY KEY,
+    consumer_id INTEGER NOT NULL REFERENCES Consumers(id),
     doctor_id INTEGER NOT NULL REFERENCES Doctors(id),
     service_id INTEGER NOT NULL REFERENCES Services(id),
     start_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE AppointmentRecords(
 );
 
 CREATE TABLE DoctorServices(
-    id INTEGER NOT NULL PRIMARY KEY,
+    id SERIAL NOT NULL PRIMARY KEY,
     doctor_id INTEGER NOT NULL REFERENCES Doctors(id),
     service_id INTEGER NOT NULL REFERENCES Services(id)
 );

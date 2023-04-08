@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from models.models import Departament
+from models.models import DepartamentWithId
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories
 
 router = APIRouter(prefix="/departments", tags=["department"])
 
 
-@router.get("/", name="Department:get", response_model=list[Departament])
+@router.get("/", name="Department:get", response_model=list[DepartamentWithId])
 async def get_departaments(
     end_cursor: int = 0,
     amount: int = 10,
@@ -18,7 +18,7 @@ async def get_departaments(
     return res
 
 
-@router.get("/{departament_id}", name="Department:get_by_id", response_model=Departament)
+@router.get("/{departament_id}", name="Department:get_by_id", response_model=DepartamentWithId)
 async def get_departament_by_id(
     departament_id: int,
     repositories: ApiRepositories = Depends(get_repositories),
@@ -31,7 +31,7 @@ async def get_departament_by_id(
 
 @router.post("/", name="Department:create", response_model=str)
 async def create_departament(
-    departament: Departament,
+    departament: DepartamentWithId,
     repositories: ApiRepositories = Depends(get_repositories),
 ):
     res = await repositories.main_postgres.create_departament(departament)
