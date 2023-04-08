@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException
-
 from models.models import Consumer
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories

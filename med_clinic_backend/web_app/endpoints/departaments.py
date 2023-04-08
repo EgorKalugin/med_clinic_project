@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
-
-from med_clinic_backend.models.models import Departament
-from med_clinic_backend.web_app.dependencies.dependencies import get_repositories
-from med_clinic_backend.web_app.repository import ApiRepositories
+from models.models import Departament
+from web_app.dependencies.dependencies import get_repositories
+from web_app.repository import ApiRepositories
 
 router = APIRouter(prefix="/departments", tags=["department"])
 

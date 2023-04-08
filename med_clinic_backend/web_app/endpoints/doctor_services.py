@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
-
-from med_clinic_backend.models.models import DoctorService
-from med_clinic_backend.web_app.dependencies.dependencies import get_repositories
-from med_clinic_backend.web_app.repository import ApiRepositories
-
+from models.models import DoctorService
+from web_app.dependencies.dependencies import get_repositories
+from web_app.repository import ApiRepositories
 
 router = APIRouter(prefix="/doctor_service", tags=["doctor_service"])
 
@@ -39,4 +37,3 @@ async def create_doctor_service(
 ) -> str:
     res = await repositories.main_postgres.create_doctor_service(doctor_service)
     return res
-
