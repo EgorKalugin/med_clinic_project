@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import Callable
 
@@ -14,6 +15,8 @@ logger = logging.getLogger("main")
 def create_start_app_handler(app: FastAPI) -> Callable:
     async def start_app() -> None:
         logger.info("Starting up application")
+        await asyncio.sleep(15)
+        # TODO: retries on startup
         initializer = ApiRepositoriesInitializer(settings)
         app.state.repository = await ApiRepositories.create(initializer)
 
