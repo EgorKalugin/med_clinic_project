@@ -8,13 +8,14 @@ export const entities = [
     "services",
 ];
 
+const BACKEND_URL = 'http://localhost:8000';
 export const ENTITY_TO_URL_MAP = {
-    "appointment_records": "backend/appointment_records",
-    "cabinets": "backend/cabinets",
-    "consumers": "backend/consumers",
-    "departaments": "backend/departaments",
-    "doctor_services": "backend/doctor_services",
-    "doctors": "backend/doctors",
-    "services": "backend/services",
+    "appointment_records": BACKEND_URL + "/appointment_record",
+    "cabinets": BACKEND_URL + "/cabinet",
+    "consumers": BACKEND_URL + "/consumer",
+    "departaments": BACKEND_URL + "/departament",
+    "doctor_services": BACKEND_URL + "/doctor_service",
+    "doctors": BACKEND_URL + "/doctor",
+    "services": BACKEND_URL + "/service",
 };
 

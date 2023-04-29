@@ -39,10 +39,11 @@ services:
     platform: linux/amd64
     build:
       context: ./med_clinic_frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.test
     container_name: med_clinic_frontend
     volumes:
-      - ./med_clinic_frontend:/med_clinic_frontend
+      - ./med_clinic_frontend/src:/med_clinic_frontend/src
+      - '/med_clinic_frontend/node_modules'
     ports:
       - 3000:3000
     depends_on:
@@ -51,6 +52,9 @@ services:
       - clinic_network
     env_file:
       - ./.env
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
 
 
 networks:

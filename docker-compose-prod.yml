@@ -1,0 +1,61 @@
+version: '3.7'
+
+services:
+  main_pg_db:
+    platform: linux/amd64
+    build:
+      context: ./Postgres
+      dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - clinic_pg_data:/var/lib/postgresql/data
+    hostname: main_pg_db
+    container_name: ${POSTGRES_MAIN_DB_HOST_NAME}
+    networks:
+      - clinic_network
+    env_file:
+      - ./.env
+
+  med_clinic_backend:
+    platform: linux/amd64
+    build:
+      context: ./med_clinic_backend
+      dockerfile: Dockerfile
+    container_name: med_clinic_backend
+    volumes:
+      - ./med_clinic_backend:/med_clinic_backend
+    ports:
+      - 8000:8000
+    depends_on:
+      - main_pg_db
+    networks:
+      - clinic_network
+    env_file:
+      - ./.env
+
+  med_clinic_frontend:
+    platform: linux/amd64
+    build:
+      context: ./med_clinic_frontend
+      dockerfile: Dockerfile
+    container_name: med_clinic_frontend
+    volumes:
+      - ./med_clinic_frontend:/med_clinic_frontend
+    ports:
+      - 3000:3000
+    depends_on:
+      - med_clinic_backend
+    networks:
+      - clinic_network
+    env_file:
+      - ./.env
+
+
+networks:
+  clinic_network:
+
+
+volumes:
+  clinic_pg_data:

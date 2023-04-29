@@ -1,7 +1,9 @@
 const ElementCart = (props) => {
     const data = props.data;
     return (
-        1
+        <div className="element-cart">
+            {data}
+        </div>
     );
 }
 

@@ -8,33 +8,32 @@ const ElementsPage = (props) => {
     const [data, setData] = useState();
     let entity = props.entity;
 
-    useEffect(() => {
+    useEffect((entity) => {
         const dataFetch = async () => {
-            let url;
-            try {
-                url = ENTITY_TO_URL_MAP[entity];
-            } catch (e) {
-                console.log(e);
-            }
-            if (url == undefined) {
-                console.log("404");
-                setData(<div>404</div>);
+            let url = ENTITY_TO_URL_MAP[entity];
+            if (url === undefined) {
+                setData(<div>URL NOT FOUND</div>);
                 return;
             }
             try {
-                const res = await (
-                    await fetch(
-                        url
-                    )
-                ).json();
-                setData(res.map((data, idx) => <ElementCart key={idx} product={data} />));
+                console.log(url);
+                const res = await fetch(
+                    url
+                )
+                if (res.status !== 200) {
+                    setData(<div>Status: {res.status}</div>);
+                    return;
+                }
+                const res_json = await (res).json();
+                console.log(res_json);
+                setData(res_json.map((data, idx) => <ElementCart key={idx} data={data} />));
             } catch (e) {
                 console.log(e);
                 setData(<div>500</div>);
             }
         };
 
-        if (entity in ENTITY_TO_URL_MAP == false) {
+        if (entity in ENTITY_TO_URL_MAP === false) {
             setData("404")
         } else { dataFetch(); }
     }, []);
@@ -42,7 +41,7 @@ const ElementsPage = (props) => {
     return (
         <div id="workspace">
             <div id="section-title">
-                Element Page Text
+                Element Page Text {entity}
             </div>
             {data}
         </div>

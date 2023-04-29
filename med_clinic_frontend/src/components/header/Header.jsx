@@ -7,7 +7,7 @@ const Header = () => {
     return (
         <BrowserRouter>
             <div id="header">
-                {entities.map((entity, idx) => <Link to={"/" + entity} className="header-link" key={idx}>{entity}</Link>)}
+                {entities.map((entity, idx) => <Link reloadDocument to={"/" + entity} className="header-link" key={idx}>{entity}</Link>)}
             </div>
         </BrowserRouter>
     );
