@@ -4,7 +4,7 @@ from .consumers import router as consumers_router
 from .departaments import router as departaments_router
 from .doctor_services import router as doctor_services_router
 from .doctors import router as doctors_router
-from .services import router as services_router
+from .service import router as services_router
 
 med_clinic_routers = [
     consumers_router,

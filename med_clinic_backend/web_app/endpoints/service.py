@@ -3,7 +3,7 @@ from models.models import ServiceWithId
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories
 
-router = APIRouter(prefix="/services", tags=["service"])
+router = APIRouter(prefix="/service", tags=["service"])
 
 
 @router.get("/", name="Service:get", response_model=list[ServiceWithId])
