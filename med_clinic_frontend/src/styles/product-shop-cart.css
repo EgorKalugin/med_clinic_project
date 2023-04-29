@@ -1,0 +1,48 @@
+.product-cart {
+    background-color: white;
+    border: 0.5px solid rgba(0, 0, 0, 0.24);
+    border-radius: 15px;
+    padding: 15px;
+    display: grid;
+    grid-template-areas:
+        'image image'
+        'title price'
+        'rate button';
+    justify-items: stretch;
+    justify-content: space-evenly;
+}
+
+.product-image {
+    grid-area: image;
+    justify-self: center;
+    width: 15vw;
+    height: 20vh;
+    padding: 1vh 0 2vh 0;
+}
+
+.product-title {
+    grid-area: title;
+}
+
+.product-price {
+    grid-area: price;
+    color: orange;
+    margin-left: 2vw;
+}
+
+.product-rate {
+    grid-area: rate;
+}
+
+.product-button {
+    grid-area: button;
+    background-color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.product-button:hover{
+    background-color: rgba(190, 255, 255, 0.562);
+}

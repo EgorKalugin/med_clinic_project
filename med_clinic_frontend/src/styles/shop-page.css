@@ -1,0 +1,12 @@
+#workspace {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-auto-columns: min-content;
+    gap: 10px;
+    width: 100%;
+}
+
+#section-title {
+    grid-column: 1/4;
+    margin-bottom: 2vh;
+}

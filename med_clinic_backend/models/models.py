@@ -78,6 +78,7 @@ class Cabinet(BaseModel):
 
 class AppointmentRecordWithoutId(BaseModel):
     """Сущность записи на прием"""
+
     consumer_id: int
     doctor_id: int
     service_id: int
