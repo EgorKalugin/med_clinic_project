@@ -308,6 +308,12 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
             )
 
     # ===================================== DoctorService =====================================
+    async def get_all_doctor_services(self) -> Optional[list[DoctorServiceWithId]]:
+        async with self._connection.acquire() as con:
+            res = await con.fetch("SELECT * FROM DoctorServices")
+        if res:
+            return [DoctorServiceWithId(**row) for row in res]
+
     async def get_doctor_services_by_doctor_id(
         self, doctor_id: int
     ) -> Optional[list[DoctorServiceWithId]]:
@@ -347,7 +353,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetch(
-                "SELECT * FROM Cabinets ORDER BY id LIMIT $1 OFFSET $2", amount, end_cursor
+                "SELECT * FROM Cabinets ORDER BY number LIMIT $1 OFFSET $2", amount, end_cursor
             )
         if res:
             return [Cabinet(**row) for row in res]
