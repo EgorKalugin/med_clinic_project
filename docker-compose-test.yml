@@ -52,10 +52,6 @@ services:
       - clinic_network
     env_file:
       - ./.env
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-    stdin_open: true
-
 
 networks:
   clinic_network:
