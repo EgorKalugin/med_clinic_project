@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from models.models import AppointmentRecordWithId, AppointmentRecordWithoutId
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories
@@ -54,9 +54,12 @@ async def get_appointment_record_by_id(
 async def create_appointment_record(
     appointment_record: AppointmentRecordWithoutId,
     repositories: ApiRepositories = Depends(get_repositories),
-):
-    res = await repositories.main_postgres.create_appointment_record(appointment_record)
-    return res
+) -> Response:
+    try:
+        await repositories.main_postgres.create_appointment_record(appointment_record)
+        return Response(status_code=200)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.put("/{appointment_id}", name="AppointmentRecord:update", response_model=str)

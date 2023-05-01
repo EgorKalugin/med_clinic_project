@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from models.models import DepartamentWithId, DepartamentWithoutId
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories
@@ -33,6 +33,9 @@ async def get_departament_by_id(
 async def create_departament(
     departament: DepartamentWithoutId,
     repositories: ApiRepositories = Depends(get_repositories),
-):
-    res = await repositories.main_postgres.create_departament(departament)
-    return res
+) -> Response:
+    try:
+        await repositories.main_postgres.create_departament(departament)
+        return Response(status_code=200)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from models.models import DoctorServiceWithId, DoctorServiceWithoutId
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories
@@ -44,6 +44,9 @@ async def get_doctor_service_by_id(
 async def create_doctor_service(
     doctor_service: DoctorServiceWithoutId,
     repositories: ApiRepositories = Depends(get_repositories),
-) -> str:
-    res = await repositories.main_postgres.create_doctor_service(doctor_service)
-    return res
+) -> Response:
+    try:
+        await repositories.main_postgres.create_doctor_service(doctor_service)
+        return Response(status_code=200)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

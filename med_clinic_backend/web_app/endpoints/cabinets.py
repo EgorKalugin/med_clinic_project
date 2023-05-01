@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from models.models import Cabinet
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories
@@ -33,6 +33,9 @@ async def get_cabinet_by_number(
 async def create_cabinet(
     cabinet: Cabinet,
     repositories: ApiRepositories = Depends(get_repositories),
-) -> str:
-    res = await repositories.main_postgres.create_cabinet(cabinet)
-    return res
+) -> Response:
+    try:
+        await repositories.main_postgres.create_cabinet(cabinet)
+        return Response(status_code=200)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
