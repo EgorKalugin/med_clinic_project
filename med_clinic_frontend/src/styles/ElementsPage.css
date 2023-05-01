@@ -1,0 +1,49 @@
+#workspace {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-auto-columns: min-content;
+    gap: 10px;
+    width: 100%;
+}
+
+#section-title {
+    grid-column: 1/4;
+    margin-bottom: 2vh;
+    font-family: Serif;
+    font-weight: bold;
+    font-size: 3vh;
+    display: flex;
+}
+
+.element-page-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0.5px solid rgba(0, 0, 0, 0.24);
+    border-radius: 5px;
+    padding: 0.5vw 1vw;
+    margin: 0 1vw 0.5vw 1vw;
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    font-size: 3vh;
+}
+
+.element-page-button:hover {
+    background-color: rgba(190, 255, 255, 0.562);
+}
+
+#section-title-text{
+    margin-right: 2vw;
+    display: flex;
+    align-items: center;
+}
+
+#element-page-404 {
+    grid-column: 1/4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Serif;
+    font-size: 3vh;
+}

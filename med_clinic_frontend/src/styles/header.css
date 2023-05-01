@@ -1,31 +1,23 @@
 #header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 1vw 0 4vw 0;
-    height: 4vh;
+    flex-wrap: wrap;
 }
 
-#header>a {
+.header-link {
     display: flex;
     border: 0.5px solid rgba(0, 0, 0, 0.24);
+    border-radius: 5px;
+    padding: 0.5vw 1vw;
+    margin: 0 1vw 0.5vw 0;
     text-decoration: none;
-    color: black;
-}
-
-#shop-buttons-menu {
-    display: flex;
-    justify-content: space-between;
-    column-gap: 3vw;
-}
-
-#shop-buttons-menu>.shop-button>img {
-    display: flex;
-    height: 4vh;
-    min-height: 15px;
-}
-
-.company-name {
+    color: rgb(0, 0, 0);
     font-family: Serif;
     font-weight: bold;
-    font-size: 4vh;
+    font-size: 3vh;
+}
+
+.header-link:hover {
+    background-color: rgba(190, 255, 255, 0.562);
 }

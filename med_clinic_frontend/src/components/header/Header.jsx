@@ -1,16 +1,27 @@
 import { BrowserRouter, Link } from "react-router-dom";
 
-import { entities } from "../../constants/entities";
+import { entities, translateEntityPlural } from "../../models/entities_mappings";
 import "../../styles/header.css";
+
+const createHeader = (entities) => {
+    let path = window.location.pathname;
+    if (path[path.length - 1] === "/") path = path.slice(0, path.length - 1);
+    return (
+        entities.map((entity, idx) => {
+            if (path === "/" + entity) return;
+            return <Link reloadDocument to={"/" + entity} className="header-link" key={idx}>{translateEntityPlural(entity)}</Link>
+        })
+    );
+};
 
 const Header = () => {
     return (
         <BrowserRouter>
             <div id="header">
-                {entities.map((entity, idx) => <Link reloadDocument to={"/" + entity} className="header-link" key={idx}>{entity}</Link>)}
+                {createHeader(entities)}
             </div>
         </BrowserRouter>
     );
-}
+};
 
 export default Header;

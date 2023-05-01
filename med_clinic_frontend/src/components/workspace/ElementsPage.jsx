@@ -1,47 +1,71 @@
 import { useEffect, useState } from 'react';
-
+import { useNavigate } from "react-router-dom";
+import { ENTITY_TO_URL_MAP_GET, translateEntityPlural } from "../../models/entities_mappings";
+import "../../styles/ElementsPage.css";
 import ElementCart from "./ElementCart";
 
-import { ENTITY_TO_URL_MAP } from "../../constants/entities";
 
 const ElementsPage = (props) => {
-    const [data, setData] = useState();
-    let entity = props.entity;
+    const entity = props.entity;
 
-    useEffect((entity) => {
+    const [data, setData] = useState();
+
+    const navigate = useNavigate();
+
+    const renderElements = (entity) => {
         const dataFetch = async () => {
-            let url = ENTITY_TO_URL_MAP[entity];
+            let url = ENTITY_TO_URL_MAP_GET[entity];
             if (url === undefined) {
                 setData(<div>URL NOT FOUND</div>);
                 return;
             }
             try {
-                console.log(url);
                 const res = await fetch(
                     url
                 )
                 if (res.status !== 200) {
-                    setData(<div>Status: {res.status}</div>);
+                    switch (res.status) {
+                        case 404:
+                            setData(<div id='element-page-404'>Записи отсутствуют</div>);
+                            break;
+                        default:
+                            setData(<div>Status: {res.status}</div>);
+                    }
                     return;
                 }
                 const res_json = await (res).json();
-                console.log(res_json);
-                setData(res_json.map((data, idx) => <ElementCart key={idx} data={data} />));
+                setData(res_json.map((data, idx) => <ElementCart key={idx} data={data} entity={entity} />));
             } catch (e) {
                 console.log(e);
-                setData(<div>500</div>);
+                setData(<div>Ошибка сервера</div>);
             }
         };
-
-        if (entity in ENTITY_TO_URL_MAP === false) {
+        if (entity in ENTITY_TO_URL_MAP_GET === false) {
             setData("404")
         } else { dataFetch(); }
-    }, []);
+    }
+
+    const renderButton = (entity) => {
+        if (entity in ENTITY_TO_URL_MAP_GET === false) {
+            return;
+        }
+        return <button className="element-page-button" onClick={() => {
+            navigate("/" + entity + "/add");
+        }
+        }> +</button >;
+    }
+
+    useEffect(() => {
+        renderElements(entity);
+    }, [entity]);
 
     return (
         <div id="workspace">
             <div id="section-title">
-                Element Page Text {entity}
+                <div id="section-title-text">
+                    {translateEntityPlural(entity)}
+                </div>
+                {renderButton(entity)}
             </div>
             {data}
         </div>

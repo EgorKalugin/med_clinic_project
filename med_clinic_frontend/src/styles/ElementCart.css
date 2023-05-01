@@ -1,0 +1,27 @@
+.element-cart {
+    background-color: white;
+    border: 0.5px solid rgba(0, 0, 0, 0.24);
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.element-cart-buttons {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.5vh;
+    border-top: 0.5px solid rgba(0, 0, 0, 0.24);
+}
+
+.element-cart-button {
+    background-color: rgba(238, 237, 237, 0.455);
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.element-cart-button:hover {
+    background-color: rgba(190, 255, 255, 0.562);
+}
