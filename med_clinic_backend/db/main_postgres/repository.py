@@ -369,10 +369,15 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         async with self._connection.acquire() as con:
             return await con.execute(
                 """INSERT INTO Cabinets
-                    (number, description)
+                    (number, description, departament_id)
                 VALUES
-                    ($1, $2)
+                    ($1, $2, $3)
                 """,
                 cabinet.number,
                 cabinet.description,
+                cabinet.departament_id,
             )
+
+    async def delete_cabinet(self, number: int) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute("DELETE FROM Cabinets WHERE number = $1", number)

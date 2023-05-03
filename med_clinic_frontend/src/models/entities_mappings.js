@@ -1,8 +1,12 @@
+import CabinetForm from "../components/forms/create/CabinetForm";
+import ConsumerForm from "../components/forms/create/ConsumerForm";
+import DoctorForm from "../components/forms/create/DoctorForm";
+
 export const entities = [
     "appointment_records",
     "cabinets",
     "consumers",
-    "departaments",
+    "departments",
     "doctor_services",
     "doctors",
     "services",
@@ -11,24 +15,25 @@ export const entities = [
 // URLS for requests to backend
 const BACKEND_URL = 'http://localhost:8000';
 export const ENTITY_TO_URL_MAP_GET = {
-    "appointment_records": BACKEND_URL + "/appointment_record",
-    "cabinets": BACKEND_URL + "/cabinet",
-    "consumers": BACKEND_URL + "/consumer",
-    "departaments": BACKEND_URL + "/departament",
-    "doctor_services": BACKEND_URL + "/doctor_service",
-    "doctors": BACKEND_URL + "/doctor",
-    "services": BACKEND_URL + "/service",
+    "appointment_records": BACKEND_URL + "/appointment_record/",
+    "cabinets": BACKEND_URL + "/cabinet/",
+    "consumers": BACKEND_URL + "/consumer/",
+    "departments": BACKEND_URL + "/departments/",
+    "doctor_services": BACKEND_URL + "/doctor_service/",
+    "doctors": BACKEND_URL + "/doctor/",
+    "services": BACKEND_URL + "/service/",
 };
 
 export const ENTITY_TO_URL_MAP_POST = {
-    "appointment_records": BACKEND_URL + "/appointment_record",
-    "cabinets": BACKEND_URL + "/cabinet",
-    "consumers": BACKEND_URL + "/consumer",
-    "departaments": BACKEND_URL + "/departament",
-    "doctor_services": BACKEND_URL + "/doctor_service",
-    "doctors": BACKEND_URL + "/doctor",
-    "services": BACKEND_URL + "/service",
+    "appointment_records": BACKEND_URL + "/appointment_record/",
+    "cabinets": BACKEND_URL + "/cabinet/",
+    "consumers": BACKEND_URL + "/consumer/",
+    "departments": BACKEND_URL + "/departments/",
+    "doctor_services": BACKEND_URL + "/doctor_service/",
+    "doctors": BACKEND_URL + "/doctor/",
+    "services": BACKEND_URL + "/service/",
 };
+export const ENTITY_TO_URL_MAP_DELETE = ENTITY_TO_URL_MAP_GET;
 // ======================================================
 
 export const translateEntityPlural = (entity) => {
@@ -39,7 +44,7 @@ export const translateEntityPlural = (entity) => {
             return "Кабинеты";
         case "consumers":
             return "Пациенты";
-        case "departaments":
+        case "departments":
             return "Отделения";
         case "doctor_services":
             return "Услуги врачей";
@@ -52,22 +57,22 @@ export const translateEntityPlural = (entity) => {
     }
 }
 
-export const translateEntitySingular = (entity) => {
+export const translateEntityForAddText = (entity) => {
     switch (entity) {
         case "appointment_records":
             return "Запись на прием";
         case "cabinets":
             return "Кабинет";
         case "consumers":
-            return "Пациент";
-        case "departaments":
+            return "Пациента";
+        case "departments":
             return "Отделение";
         case "doctor_services":
-            return "Услуга врача";
+            return "Услугу врача";
         case "doctors":
-            return "Врач";
+            return "Врача";
         case "services":
-            return "Услуга";
+            return "Услугу";
         default:
             return entity;
     }
@@ -103,7 +108,7 @@ export const translateEntitySingular = (entity) => {
 //             "email",
 //             "individual_sale",
 //         ],
-//     "departaments":
+//     "departments":
 //         [
 //             "id",
 //             "name",
@@ -194,7 +199,7 @@ export const translateEntityFields = (entity, field) => {
                 default:
                     return field;
             }
-        case "departaments":
+        case "departments":
             switch (field) {
                 case "id":
                     return "ID";
@@ -255,3 +260,8 @@ export const translateEntityFields = (entity, field) => {
     }
 }
 
+export const entityToCreateForm = {
+    "doctors": <DoctorForm />,
+    "cabinets": <CabinetForm />,
+    "consumers": <ConsumerForm />,
+}

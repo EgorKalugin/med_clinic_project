@@ -39,3 +39,14 @@ async def create_cabinet(
         return Response(status_code=200)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.delete("/{cabinet_number}", name="Cabinet:delete", response_model=str)
+async def delete_cabinet(
+    cabinet_number: int, repositories: ApiRepositories = Depends(get_repositories)
+) -> Response:
+    try:
+        await repositories.main_postgres.delete_cabinet(cabinet_number)
+        return Response(status_code=200)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

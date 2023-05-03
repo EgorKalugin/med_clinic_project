@@ -5,13 +5,13 @@ enum ScheduleStates {
     NOT_ARRIVED = "not_arrived"
 }
 
-class DoctorWithoutId {
-    departament_id: number;
-    bio?: string;
+export class DoctorWithoutId {
     first_name: string;
     second_name?: string;
     last_name: string;
     date_of_birth: Date;
+    bio?: string;
+    departament_id: number;
 }
 
 class DoctorWithId extends DoctorWithoutId {
@@ -52,12 +52,12 @@ class DoctorServiceWithId extends DoctorServiceWithoutId {
 
 
 class ConsumerWithoutId {
-    bio?: string;
-    date_of_birth?: Date;
     first_name: string;
     second_name?: string;
     last_name: string;
     phone_number?: string;
+    bio?: string;
+    date_of_birth?: Date;
     email?: string;
     individual_sale?: number;
 }

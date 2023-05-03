@@ -1,4 +1,4 @@
-.element-cart {
+.element {
     background-color: white;
     border: 0.5px solid rgba(0, 0, 0, 0.24);
     border-radius: 15px;
@@ -7,21 +7,27 @@
     flex-direction: column;
 }
 
-.element-cart-buttons {
+.element-buttons {
     display: flex;
     justify-content: space-between;
     padding-top: 0.5vh;
     border-top: 0.5px solid rgba(0, 0, 0, 0.24);
 }
-
-.element-cart-button {
-    background-color: rgba(238, 237, 237, 0.455);
+.btn-with-margin {
+    margin-right: 0.5vw;
+} 
+.element-button {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;  
     border: none;
     font-weight: bold;
     cursor: pointer;
     border-radius: 10px;
 }
 
-.element-cart-button:hover {
-    background-color: rgba(190, 255, 255, 0.562);
+.element-button:hover {
+    color: #fff;
+    background-color: #0069d9;
+    border-color: #0062cc;
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { ENTITY_TO_URL_MAP_GET, translateEntityPlural } from "../../models/entities_mappings";
 import "../../styles/ElementsPage.css";
-import ElementCart from "./ElementCart";
+import Element from "./Element";
 
 
 const ElementsPage = (props) => {
@@ -33,8 +33,8 @@ const ElementsPage = (props) => {
                     }
                     return;
                 }
-                const res_json = await (res).json();
-                setData(res_json.map((data, idx) => <ElementCart key={idx} data={data} entity={entity} />));
+                const res_json = await res.json();
+                setData(res_json.map((data, idx) => <Element key={idx} data={data} entity={entity} />));
             } catch (e) {
                 console.log(e);
                 setData(<div>Ошибка сервера</div>);
