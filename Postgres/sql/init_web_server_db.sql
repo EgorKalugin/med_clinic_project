@@ -21,7 +21,7 @@ CREATE TABLE Consumers(
     first_name VARCHAR(30) NOT NULL,
     second_name VARCHAR(30) NULL,
     last_name VARCHAR(30) NOT NULL,
-    individual_sale DECIMAL(8, 2) NOT NULL,
+    individual_sale DECIMAL(8, 2) NOT NULL DEFAULT 0 CHECK (individual_sale >= 0 AND individual_sale <= 0.5),
     phone_number VARCHAR(15) NULL,
     email VARCHAR(255) NULL
 );
