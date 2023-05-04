@@ -1,6 +1,8 @@
 import CabinetForm from "../components/forms/create/CabinetForm";
 import ConsumerForm from "../components/forms/create/ConsumerForm";
+import DepartamentForm from "../components/forms/create/DepartamentForm";
 import DoctorForm from "../components/forms/create/DoctorForm";
+import ServiceForm from "../components/forms/create/ServiceForm";
 
 export const entities = [
     "appointment_records",
@@ -264,4 +266,6 @@ export const entityToCreateForm = {
     "doctors": <DoctorForm />,
     "cabinets": <CabinetForm />,
     "consumers": <ConsumerForm />,
+    "departments": <DepartamentForm />,
+    "services": <ServiceForm />,
 }

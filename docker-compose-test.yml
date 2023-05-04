@@ -43,7 +43,6 @@ services:
     container_name: med_clinic_frontend
     volumes:
       - ./med_clinic_frontend/src:/med_clinic_frontend/src
-      - '/med_clinic_frontend/node_modules'
     ports:
       - 3000:3000
     depends_on:

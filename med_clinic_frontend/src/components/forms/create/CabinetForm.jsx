@@ -42,7 +42,7 @@ const CabinetForm = () => {
             },
             body: JSON.stringify(data),
         }).then((res) => {
-            if (res.status === 200) {
+            if (res.ok) {
                 alert("Кабинет добавлен");
                 navigate("/cabinets")
             } else {

@@ -44,7 +44,7 @@ const ConsumerForm = () => {
             body: JSON.stringify(data),
         }).then((res) => {
             console.log(res);
-            if (res.status === 200) {
+            if (res.ok) {
                 alert("Пациент успешно создан");
                 navigate("/consumers");
             } else {

@@ -57,7 +57,7 @@ const DoctorForm = () => {
             },
             body: JSON.stringify(data),
         }).then((res) => {
-            if (res.status === 200) {
+            if (res.ok) {
                 alert("Доктор добавлен");
                 navigate("/doctors")
             } else {
