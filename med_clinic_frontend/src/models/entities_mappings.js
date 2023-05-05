@@ -1,7 +1,9 @@
+import AppointmentRecordForm from "../components/forms/create/AppointmentRecordForm";
 import CabinetForm from "../components/forms/create/CabinetForm";
 import ConsumerForm from "../components/forms/create/ConsumerForm";
 import DepartamentForm from "../components/forms/create/DepartamentForm";
 import DoctorForm from "../components/forms/create/DoctorForm";
+import DoctorServiceForm from "../components/forms/create/DoctorServiceForm";
 import ServiceForm from "../components/forms/create/ServiceForm";
 
 export const entities = [
@@ -268,4 +270,14 @@ export const entityToCreateForm = {
     "consumers": <ConsumerForm />,
     "departments": <DepartamentForm />,
     "services": <ServiceForm />,
+    "doctor_services": <DoctorServiceForm />,
+    "appointment_records": <AppointmentRecordForm />,
+}
+
+export const getDoctorFullName = (doctor) => {
+    return getConsumerFullName(doctor)
+}
+
+export const getConsumerFullName = (consumer) => {
+    return (consumer.last_name ? consumer.last_name + " " : "") + (consumer.first_name ? consumer.first_name + " " : "") + (consumer.second_name ? consumer.second_name : "")
 }

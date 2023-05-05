@@ -1,4 +1,4 @@
-enum ScheduleStates {
+export enum ScheduleStates {
     DONE = "done",
     CANCELLED = "cancelled",
     IN_PROGRESS = "in_progress",

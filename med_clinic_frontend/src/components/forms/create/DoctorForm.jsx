@@ -11,13 +11,13 @@ const DoctorForm = () => {
     const [bio, SetBio] = useState();
     const [departamentId, SetDepartamentId] = useState();
 
-    const [departmentsOptions, setDepartments] = useState();
+    const [departmentsOptions, setDepartmentsOptions] = useState();
 
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchDepartments().then((res) => {
-            setDepartments(res.map((department) => {
+            setDepartmentsOptions(res.map((department) => {
                 return (
                     <option key={department.id} value={department.id}>{department.name}</option>
                 )

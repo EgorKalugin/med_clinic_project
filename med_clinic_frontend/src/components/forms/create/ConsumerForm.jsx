@@ -34,7 +34,7 @@ const ConsumerForm = () => {
             bio: bio,
             phone_number: phone,
             email: email,
-            individual_sale: individualSale,
+            individual_sale: individualSale? individualSale : 0,
         }
         fetch(ENTITY_TO_URL_MAP_POST["consumers"], {
             method: "POST",

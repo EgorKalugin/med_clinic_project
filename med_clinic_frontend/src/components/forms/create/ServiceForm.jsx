@@ -1,21 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { ENTITY_TO_URL_MAP_POST } from "../../../models/entities_mappings";
 import { useState } from "react";
-import { TimeField, TimePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 
 const ServiceForm = () => {
     const [name, setName] = useState();
     const [description, setDescription] = useState();
     const [price, setPrice] = useState();
-    const [defaultDuration, setDefaultDuration] = useState(dayjs('2022-04-17T01:30'));
+    const [defaultDuration, setDefaultDuration] = useState();
 
     const navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(defaultDuration.format("HH:mm:ss"));
-        return;
         if (!name) {
             alert("Введите название услуги");
             return;
@@ -34,6 +30,7 @@ const ServiceForm = () => {
             price: price,
             default_duration: defaultDuration,
         }
+        console.log(JSON.stringify(data));
         fetch(ENTITY_TO_URL_MAP_POST["services"], {
             method: "POST",
             headers: {
@@ -65,15 +62,11 @@ const ServiceForm = () => {
                 <input type="text" className="form-control" id="description" onChange={(event) => setDescription(event.target.value)} />
             </div>
             <div className="form-group">
-                <label htmlFor="price">Цена услуги</label>
+                <label htmlFor="price">Цена услуги {"(руб)"}</label>
                 <input type="number" className="form-control" id="price" onChange={(event) => setPrice(event.target.value)} />
             </div>
             <div className="form-group">
-                <TimeField label="Длительность услуги" id="duration"
-                    format="hh:mm:ss"
-                    defaultValue={defaultDuration}
-                    onChange={(newValue) => setDefaultDuration(newValue)}
-                />
+                <input type="time" className="form-control" id="duration" onChange={(event) => setDefaultDuration(event.target.value)} />
             </div>
             <button type="submit" className="btn-add">Добавить</button>
         </form>

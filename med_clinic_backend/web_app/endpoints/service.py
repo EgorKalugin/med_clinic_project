@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Response
-from models.models import ServiceWithId
+from models.models import ServiceWithId, ServiceWithoutId
 from web_app.dependencies.dependencies import get_repositories
 from web_app.repository import ApiRepositories
 
@@ -31,7 +31,7 @@ async def get_service_by_id(
 
 @router.post("/", name="Service:create", response_model=str)
 async def create_service(
-    service: ServiceWithId,
+    service: ServiceWithoutId,
     repositories: ApiRepositories = Depends(get_repositories),
 ) -> Response:
     try:
