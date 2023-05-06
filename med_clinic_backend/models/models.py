@@ -1,4 +1,5 @@
 from datetime import date, time
+import datetime
 from decimal import Decimal
 from enum import Enum
 from typing import Optional
@@ -82,8 +83,8 @@ class AppointmentRecordWithoutId(BaseModel):
     consumer_id: int
     doctor_id: int
     service_id: int
-    start_time: time
-    end_time: time
+    start_time: datetime.datetime
+    end_time: datetime.datetime
     price: Decimal
     state: ScheduleStates
     cabinet_number: int

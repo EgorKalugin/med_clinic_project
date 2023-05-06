@@ -51,3 +51,12 @@ async def update_consumer(
         raise HTTPException(status_code=400, detail="Consumer id in url and body are different")
     res = await repositories.main_postgres.update_consumer(consumer_id, consumer)
     return res
+
+
+@router.delete("/{consumer_id}", name="Consumer:delete", response_model=str)
+async def delete_consumer(
+    consumer_id: int,
+    repositories: ApiRepositories = Depends(get_repositories),
+):
+    res = await repositories.main_postgres.delete_consumer_by_id(consumer_id)
+    return res

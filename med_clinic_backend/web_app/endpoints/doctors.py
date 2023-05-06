@@ -51,3 +51,12 @@ async def update_doctor(
         raise HTTPException(status_code=400, detail="Doctor id in path and body are not equal")
     res = await repositories.main_postgres.update_doctor(doctor_id, doctor)
     return res
+
+
+@router.delete("/{doctor_id}", name="Doctor:delete", response_model=str)
+async def delete_doctor(
+    doctor_id: int,
+    repositories: ApiRepositories = Depends(get_repositories),
+):
+    res = await repositories.main_postgres.delete_doctor_by_id(doctor_id)
+    return res

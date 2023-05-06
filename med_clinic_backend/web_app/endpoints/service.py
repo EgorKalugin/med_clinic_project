@@ -53,3 +53,12 @@ async def update_service(
         )
     res = await repositories.main_postgres.update_service(service_id, service)
     return res
+
+
+@router.delete("/{service_id}", name="Service:delete", response_model=str)
+async def delete_service(
+    service_id: int,
+    repositories: ApiRepositories = Depends(get_repositories),
+):
+    res = await repositories.main_postgres.delete_service_by_id(service_id)
+    return res

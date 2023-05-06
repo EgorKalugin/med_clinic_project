@@ -72,7 +72,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 appointment.start_time,
                 appointment.end_time,
                 appointment.price,
-                appointment.state,
+                appointment.state.value,
                 appointment.cabinet_number,
             )
 
@@ -102,6 +102,12 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 appointment.state,
                 appointment.cabinet_number,
                 appointment_id,
+            )
+
+    async def delete_appointment_record_by_id(self, appointment_id: int) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute(
+                "DELETE FROM AppointmentRecords WHERE id = $1", appointment_id
             )
 
     # ======================================== Consumers ===========================================
@@ -167,6 +173,10 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 consumer_id,
             )
 
+    async def delete_consumer_by_id(self, consumer_id: int) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute("DELETE FROM Consumers WHERE id = $1", consumer_id)
+
     # ===================================== Doctors =====================================
     async def get_all_doctors_with_pagination(
         self, end_cursor: int, amount: int = 10
@@ -225,6 +235,10 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 doctor_id,
             )
 
+    async def delete_doctor_by_id(self, doctor_id: int) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute("DELETE FROM Doctors WHERE id = $1", doctor_id)
+
     # ===================================== Services =====================================
     async def get_all_services_with_pagination(
         self, end_cursor: int, amount: int = 10
@@ -276,6 +290,10 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 service_id,
             )
 
+    async def delete_service_by_id(self, service_id: int) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute("DELETE FROM Services WHERE id = $1", service_id)
+
     # ===================================== Departaments =====================================
     async def get_all_departaments_with_pagination(
         self, end_cursor: int, amount: int = 10
@@ -306,6 +324,24 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 departament.name,
                 departament.description,
             )
+
+    async def update_departament(self, departament_id: int, departament: DepartamentWithId) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute(
+                """UPDATE Departaments
+                SET
+                    name = $1,
+                    description = $2
+                WHERE id = $3
+                """,
+                departament.name,
+                departament.description,
+                departament_id,
+            )
+
+    async def delete_departament_by_id(self, departament_id: int) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute("DELETE FROM Departaments WHERE id = $1", departament_id)
 
     # ===================================== DoctorService =====================================
     async def get_all_doctor_services(self) -> Optional[list[DoctorServiceWithId]]:
@@ -344,6 +380,16 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 """,
                 doctor_service.doctor_id,
                 doctor_service.service_id,
+            )
+
+    async def delete_doctor_service_by_id(
+        self,
+        doctor_service_id: int,
+    ) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute(
+                "DELETE FROM DoctorServices WHERE id = $1",
+                doctor_service_id,
             )
 
     # =========================================== Cabinet ==========================================

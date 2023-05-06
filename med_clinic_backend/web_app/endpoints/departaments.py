@@ -39,3 +39,27 @@ async def create_departament(
         return Response(status_code=200)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.put("/{departament_id}", name="Department:update", response_model=str)
+async def update_departament(
+    departament_id: int,
+    departament: DepartamentWithId,
+    repositories: ApiRepositories = Depends(get_repositories),
+):
+    if departament_id != departament.id:
+        raise HTTPException(
+            status_code=400,
+            detail="Departament id and departament id in request body are not equal",
+        )
+    res = await repositories.main_postgres.update_departament(departament_id, departament)
+    return res
+
+
+@router.delete("/{departament_id}", name="Department:delete", response_model=str)
+async def delete_departament(
+    departament_id: int,
+    repositories: ApiRepositories = Depends(get_repositories),
+):
+    res = await repositories.main_postgres.delete_departament_by_id(departament_id)
+    return res

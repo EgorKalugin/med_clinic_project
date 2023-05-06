@@ -73,3 +73,11 @@ async def update_appointment_record(
     return await repositories.main_postgres.update_appointment_record(
         appointment_id, appointment_record
     )
+
+
+@router.delete("/{appointment_id}", name="AppointmentRecord:delete", response_model=str)
+async def delete_appointment_record(
+    appointment_id: int,
+    repositories: ApiRepositories = Depends(get_repositories),
+):
+    return await repositories.main_postgres.delete_appointment_record_by_id(appointment_id)

@@ -50,3 +50,12 @@ async def create_doctor_service(
         return Response(status_code=200)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.delete("/{doctor_service_id}", name="DoctorService:delete", response_model=str)
+async def delete_doctor_service(
+    doctor_service_id: int,
+    repositories: ApiRepositories = Depends(get_repositories),
+):
+    res = await repositories.main_postgres.delete_doctor_service_by_id(doctor_service_id)
+    return res
