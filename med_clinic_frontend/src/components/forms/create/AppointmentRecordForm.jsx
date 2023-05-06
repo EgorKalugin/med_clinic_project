@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { ENTITY_TO_URL_MAP_POST, getConsumerFullName, getDoctorFullName } from "../../../models/entities_mappings";
+import { ENTITY_TO_URL_MAP_POST, getConsumerFullName, getDoctorFullName, translateState } from "../../../models/entities_mappings";
 import { fetchCabinets, fetchConsumers, fetchDoctors, fetchServices } from "../../../models/fetch_data";
+import { ScheduleStates } from "../../../models/models.ts";
+import { useNavigate } from "react-router-dom";
 
 const AppointmentRecordForm = () => {
     const [consumer_id, setConsumer_id] = useState();
@@ -19,12 +21,8 @@ const AppointmentRecordForm = () => {
     const [consumers, setConsumers] = useState([]);
     const [cabinets, setCabinets] = useState([]);
 
-    const getDoctorById = (id) => {
-        return doctors.find((doctor) => doctor.id == id);
-    };
-    const getConsumerById = (id) => {
-        return consumers.find((consumer) => consumer.id == id);
-    };
+    const navigate = useNavigate();
+
     const getServiceById = (id) => {
         return services.find((service) => service.id == id);
     };
@@ -66,6 +64,10 @@ const AppointmentRecordForm = () => {
             alert("Укажите цену");
             return;
         }
+        if (price < 0) {
+            alert("Цена не может быть отрицательной");
+            return;
+        }
         if (!state) {
             alert("Укажите статус");
             return;
@@ -74,7 +76,14 @@ const AppointmentRecordForm = () => {
             alert("Укажите номера кабинета");
             return;
         }
-
+        if (new Date(start_time) > new Date(end_time)) {
+            alert("Время начала не может быть позже времени окончания");
+            return;
+        }
+        if (cabinets.find((cabinet) => cabinet.number == cabinet_number) == undefined) {
+            alert("Кабинет с таким номером не существует");
+            return;
+        }
         const appointmentRecord = {
             "consumer_id": consumer_id,
             "doctor_id": doctor_id,
@@ -83,18 +92,29 @@ const AppointmentRecordForm = () => {
             "end_time": end_time,
             "price": price,
             "state": state,
-            "cabinet_numbe": cabinet_number
+            "cabinet_number": cabinet_number
         };
         console.log(appointmentRecord);
-        fetch(ENTITY_TO_URL_MAP_POST["appointment_record"], {
+        fetch(ENTITY_TO_URL_MAP_POST["appointment_records"], {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(appointmentRecord),
         })
-            .then((response) => response.json())
-            .then((data) => console.log(data));
+            .then((response) => {
+                if (response.ok) {
+                    alert("Запись на прием успешно создана");
+                    navigate("/appointment_records");
+                }
+                else {
+                    alert("Ошибка при создании записи на прием");
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+                alert("Ошибка при создании записи на прием");
+            });
     };
 
     return (
@@ -129,9 +149,8 @@ const AppointmentRecordForm = () => {
                     if (start_time) {
                         setRecomendedEndTime(
                             new Date(
-                                new Date(start_time).getTime() + (parseDurationStrToSec(getServiceById(e.target.value)?.default_duration))
-                            ).toISOString().slice(11, 19)
-                            // TODO: fix time zone
+                                new Date(start_time).getTime() + (parseDurationStrToSec(getServiceById(e.target.value)?.default_duration) * 1000) - new Date(start_time).getTimezoneOffset() * 60 * 1000
+                            ).toUTCString()
                         );
                     }
                     setService_id(e.target.value)
@@ -163,12 +182,12 @@ const AppointmentRecordForm = () => {
                 <label htmlFor="state">Статус</label>
                 <select className="form-control" id="state" onChange={(e) => setState(e.target.value)}>
                     <option hidden value={undefined}>Выберите статус</option>
-                    {/* {ScheduleStates.map((state) => {
+                    {Object.values(ScheduleStates).map((state) => {
                         return (
-                            <option key={state} value={state}>{state}</option>
+                            <option key={state} value={state}>{translateState(state)}</option>
                         )
                     }
-                    )} */}
+                    )}
                 </select>
             </div>
             <div className="form-group">

@@ -18,8 +18,13 @@ const Element = ({ entity, data, doctorsCahce, servicesCahce }) => {
     };
 
     const onClickDelete = (entity, id) => {
-        sendDeleteRequest(entity, id);
-        window.location.reload();
+        sendDeleteRequest(entity, id).then(() => {
+            window.location.reload();
+        }).catch((e) => {
+            alert("Ошибка при удалении");
+            alert(e);
+            console.log(response);
+        });
     }
 
     const sendDeleteRequest = async (entity, id) => {
@@ -31,8 +36,7 @@ const Element = ({ entity, data, doctorsCahce, servicesCahce }) => {
             }
         });
         if (!response.ok) {
-            console.log(response);
-            throw new Error(response.status);
+            throw new Error(response.text);
         }
         const res = await response.text()
         return res;

@@ -281,3 +281,18 @@ export const getDoctorFullName = (doctor) => {
 export const getConsumerFullName = (consumer) => {
     return (consumer.last_name ? consumer.last_name + " " : "") + (consumer.first_name ? consumer.first_name + " " : "") + (consumer.second_name ? consumer.second_name : "")
 }
+
+export const translateState = (state) => {
+    switch (state) {
+        case "cancelled":
+            return "Отменено";
+        case "in_progress":
+            return "В процессе";
+        case "done":
+            return "Завершено";
+        case "not_arrived":
+            return "Не пришел";
+        default:
+            return state;
+    }
+}
