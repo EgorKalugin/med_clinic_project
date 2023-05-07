@@ -40,6 +40,14 @@ const ServiceForm = ({ entityId }) => {
             alert("Введите цену услуги");
             return;
         }
+        if (price < 0) {
+            alert("Цена услуги не может быть отрицательной");
+            return;
+        }
+        if (price > 1000000) {
+            alert("Цена не может быть больше 10^6");
+            return;
+        }
         if (!defaultDuration) {
             alert("Введите длительность услуги");
             return;

@@ -1,6 +1,6 @@
 import "../../styles/Element.css"
 
-import { ENTITY_TO_URL_MAP_DELETE, getDoctorFullName, translateEntityFields } from "../../models/entities_mappings";
+import { ENTITY_TO_URL_MAP_DELETE, getDoctorFullName, translateEntityFields, translateState } from "../../models/entities_mappings";
 import { useNavigate } from "react-router-dom";
 
 
@@ -69,6 +69,7 @@ const Element = ({ entity, data, doctorsCahce, servicesCahce }) => {
             return (Object.entries(data).map(([key, value], i) => {
                 if (key === "id") return;
                 if (key === "price") value = value + " руб.";
+                if (entity === "appointment_records" && key === "state") return <div key={i} >{translateEntityFields(entity, key)}: {translateState(value)}</div>;
                 return <div key={i} >{translateEntityFields(entity, key)}: {value}</div>;
             }
             ));

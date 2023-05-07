@@ -82,6 +82,10 @@ const AppointmentRecordForm = ({ entityId }) => {
             alert("Цена не может быть отрицательной");
             return;
         }
+        if (price > 1000000) {
+            alert("Цена не может быть больше 10^6");
+            return;
+        }
         if (!state) {
             alert("Укажите статус");
             return;
