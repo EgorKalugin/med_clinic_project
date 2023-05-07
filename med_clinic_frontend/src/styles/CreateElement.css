@@ -4,7 +4,7 @@
   align-items: flex-start;
   margin-bottom: 1vh;
   padding-bottom: 1vh;
-  width: max(35%,150px);
+  width: max(35%, 150px);
 }
 
 .form-control {
@@ -17,6 +17,10 @@
   background-color: #fff;
   color: #495057;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  background-color: rgba(190, 255, 255, 0.562);
 }
 
 .btn-add {

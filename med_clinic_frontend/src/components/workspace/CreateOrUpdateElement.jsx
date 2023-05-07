@@ -19,7 +19,7 @@ const CreateOrUpdateElement = (props) => {
         <div className="workspace">
             <div id="section-title">
                 <div id="section-title-text">
-                    Добавить {translateEntityForAddText(entity).toLowerCase()}
+                    {entityId ? "Обновить" : "Добавить"} {translateEntityForAddText(entity).toLowerCase()}
                 </div>
                 {renderButton(entity)}
             </div>

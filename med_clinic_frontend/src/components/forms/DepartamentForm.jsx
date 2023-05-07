@@ -50,15 +50,15 @@ const DepartamentForm = ({ entityId }) => {
             body: JSON.stringify(data),
         }).then((res) => {
             if (res.ok) {
-                alert("Отделение" + (entityId ? "обновлено" : "создано"));
+                alert("Отделение " + (entityId ? "обновлено" : "создано"));
                 navigate("/departments");
             } else {
-                alert("Ошибка" + (entityId ? "обновления" : "создания") + "отделения");
+                alert("Ошибка " + (entityId ? "обновления" : "создания") + " отделения");
             }
         }
         ).catch((err) => {
             console.log(err);
-            alert("Ошибка" + (entityId ? "обновления" : "создания") + "отделения");
+            alert("Ошибка " + (entityId ? "обновления" : "создания") + " отделения");
         });
     }
 
@@ -66,11 +66,17 @@ const DepartamentForm = ({ entityId }) => {
         <form onSubmit={handleSubmit}>
             <div className="form-group">
                 <label htmlFor="name">Название отделения</label>
-                <input type="text" className="form-control" id="name" onChange={(event) => setName(event.target.value)} />
+                <input type="text" className="form-control" id="name"
+                    defaultValue={name}
+                    onChange={(event) => setName(event.target.value)}
+                />
             </div>
             <div className="form-group">
                 <label htmlFor="description">Описание отделения</label>
-                <input type="text" className="form-control" id="description" onChange={(event) => setDescription(event.target.value)} />
+                <input type="text" className="form-control" id="description"
+                    defaultValue={description}
+                    onChange={(event) => setDescription(event.target.value)}
+                />
             </div>
             <button type="submit" className="btn btn-primary">{entityId ? "Обновить" : "Создать"}</button>
         </form>

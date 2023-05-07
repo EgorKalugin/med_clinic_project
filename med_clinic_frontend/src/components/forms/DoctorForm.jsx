@@ -82,15 +82,15 @@ const DoctorForm = ({ entityId }) => {
             body: JSON.stringify(data),
         }).then((res) => {
             if (res.ok) {
-                alert("Доктор" + (entityId ? "обновлен" : "добавлен"));
+                alert("Доктор " + (entityId ? "обновлен" : "добавлен"));
                 navigate("/doctors")
             } else {
-                alert("Ошибка" + (entityId ? "обновления" : "добавления") + "доктора");
+                alert("Ошибка " + (entityId ? "обновления" : "добавления") + " доктора");
             }
         }
         ).catch((err) => {
             console.log(err);
-            alert("Ошибка" + (entityId ? "обновления" : "добавления") + "доктора");
+            alert("Ошибка " + (entityId ? "обновления" : "добавления") + " доктора");
         }
         );
     }
@@ -100,6 +100,7 @@ const DoctorForm = ({ entityId }) => {
                 <div className="form-group">
                     <label htmlFor="firstName">Имя</label>
                     <input type="text" className="form-control" id="firstName" placeholder="Имя"
+                        defaultValue={firstName}
                         onChange={(e) => {
                             setFirstName(e.target.value);
                         }}
@@ -108,6 +109,7 @@ const DoctorForm = ({ entityId }) => {
                 <div className="form-group">
                     <label htmlFor="lastName">Фамилия</label>
                     <input type="text" className="form-control" id="lastName" placeholder="Отчество"
+                        defaultValue={lastName}
                         onChange={(e) => {
                             SetLastName(e.target.value);
                         }}
@@ -116,6 +118,7 @@ const DoctorForm = ({ entityId }) => {
                 <div className="form-group">
                     <label htmlFor="secondName">Отчество</label>
                     <input type="text" className="form-control" id="secondName" placeholder="Фамилия"
+                        defaultValue={secondName}
                         onChange={(e) => {
                             SetSecondName(e.target.value);
                         }}
@@ -124,6 +127,7 @@ const DoctorForm = ({ entityId }) => {
                 <div className="form-group">
                     <label htmlFor="dateOfBirth">Дата рождения</label>
                     <input type="date" className="form-control" id="dateOfBirth" placeholder="Дата рождения"
+                        defaultValue={dateOfBirth}
                         onChange={(e) => {
                             SetDateOfBirth(e.target.value);
                         }}
@@ -132,6 +136,7 @@ const DoctorForm = ({ entityId }) => {
                 <div className="form-group">
                     <label htmlFor="bio">Биография</label>
                     <textarea type="text" className="form-control" id="bio" placeholder="Биография"
+                        defaultValue={bio}
                         onChange={(e) => {
                             SetBio(e.target.value);
                         }}
@@ -140,6 +145,7 @@ const DoctorForm = ({ entityId }) => {
                 <div className="form-group">
                     <label htmlFor="departamentId">Отделение</label>
                     <select className="form-control" id="departamentId" placeholder="Отделение" value={departamentId}
+                        defaultValue={departamentId}
                         onChange={(e) => SetDepartamentId(e.target.value)}
                     >
                         <option hidden value={undefined} >Выберите отделение</option>

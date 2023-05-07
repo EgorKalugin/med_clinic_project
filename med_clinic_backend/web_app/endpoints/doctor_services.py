@@ -17,6 +17,20 @@ async def get_all_doctor_services(
 
 
 @router.get(
+    "/{doctor_service_id}",
+    name="DoctorService:get_by_doctor_service_id",
+    response_model=DoctorServiceWithId,
+)
+async def get_doctor_service_by_doctor_service_id(
+    doctor_service_id: int, repositories: ApiRepositories = Depends(get_repositories)
+) -> DoctorServiceWithId:
+    res = await repositories.main_postgres.get_doctor_service_by_id(doctor_service_id)
+    if not res:
+        raise HTTPException(status_code=404, detail="No doctor service found")
+    return res
+
+
+@router.get(
     "/by_doctor_id/{doctor_id}",
     name="DoctorService:get_by_doctor_id",
     response_model=list[DoctorServiceWithId],
@@ -30,7 +44,11 @@ async def get_doctor_services_by_doctor_id(
     return res
 
 
-@router.get("/{service_id}", name="DoctorService:get_by_id", response_model=DoctorServiceWithId)
+@router.get(
+    "/by_service_id/{service_id}",
+    name="DoctorService:get_by_id",
+    response_model=DoctorServiceWithId,
+)
 async def get_doctor_service_by_id(
     service_id: int, repositories: ApiRepositories = Depends(get_repositories)
 ) -> DoctorServiceWithId:
@@ -47,6 +65,19 @@ async def create_doctor_service(
 ) -> Response:
     try:
         await repositories.main_postgres.create_doctor_service(doctor_service)
+        return Response(status_code=200)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.put("/{doctor_service_id}", name="DoctorService:update", response_model=str)
+async def update_doctor_service(
+    doctor_service_id: int,
+    doctor_service: DoctorServiceWithId,
+    repositories: ApiRepositories = Depends(get_repositories),
+) -> Response:
+    try:
+        await repositories.main_postgres.update_doctor_service(doctor_service_id, doctor_service)
         return Response(status_code=200)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

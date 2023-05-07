@@ -67,15 +67,15 @@ const CabinetForm = ({ entityId }) => {
             body: JSON.stringify(data),
         }).then((res) => {
             if (res.ok) {
-                alert("Кабинет добавлен");
+                alert("Кабинет " + (entityId ? "обновлен" : "создан"));
                 navigate("/cabinets")
             } else {
-                alert("Ошибка" + (entityId ? "обновления" : "добавления") + "кабинета");
+                alert("Ошибка " + (entityId ? "обновления" : "добавления") + " кабинета");
             }
         }
         ).catch((err) => {
             console.log(err);
-            alert("Ошибка" + (entityId ? "обновления" : "добавления") + "кабинета");
+            alert("Ошибка " + (entityId ? "обновления" : "добавления") + " кабинета");
         }
         );
     }
@@ -84,18 +84,26 @@ const CabinetForm = ({ entityId }) => {
         <form onSubmit={handleSubmit}>
             <div className="form-group">
                 <label htmlFor="number">Номер кабинета</label>
-                <input type="number" className="form-control" id="number" onChange={(event) => setNumber(event.target.value)} />
+                <input type="number" className="form-control" id="number"
+                    defaultValue={number}
+                    onChange={(event) => setNumber(event.target.value)}
+                />
             </div>
             <div className="form-group">
                 <label htmlFor="department">Отделение</label>
-                <select className="form-control" id="department" onChange={(event) => setDepartmentId(event.target.value)}>
+                <select className="form-control" id="department"
+                    defaultValue={departmentId}
+                    onChange={(event) => setDepartmentId(event.target.value)}>
                     <option value={null}>не указано</option>
                     {departmentsOptions}
                 </select>
             </div>
             <div className="form-group">
                 <label htmlFor="description">Описание</label>
-                <textarea className="form-control" id="description" onChange={(event) => setDescription(event.target.value)} />
+                <textarea className="form-control" id="description"
+                    defaultValue={description}
+                    onChange={(event) => setDescription(event.target.value)}
+                />
             </div>
             <button type="submit" className="btn-add">{entityId ? "Обновить" : "Добавить"}</button>
         </form>

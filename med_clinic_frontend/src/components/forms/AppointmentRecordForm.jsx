@@ -5,16 +5,16 @@ import { ScheduleStates } from "../../models/models.ts";
 import { useNavigate } from "react-router-dom";
 
 const AppointmentRecordForm = ({ entityId }) => {
-    const [consumer_id, setConsumer_id] = useState();
-    const [doctor_id, setDoctor_id] = useState();
-    const [service_id, setService_id] = useState();
-    const [start_time, setStart_time] = useState();
-    const [end_time, setEnd_time] = useState();
+    const [consumer_id, setConsumerId] = useState();
+    const [doctor_id, setDoctorId] = useState();
+    const [service_id, setServiceId] = useState();
+    const [start_time, setStartTime] = useState();
+    const [end_time, setEndTime] = useState();
     const [recomendedEndTime, setRecomendedEndTime] = useState();
     const [price, setPrice] = useState();
     const [recomendedPrice, setRecomendedPrice] = useState();
     const [state, setState] = useState();
-    const [cabinet_number, setCabinet_number] = useState();
+    const [cabinet_number, setCabinetNumber] = useState();
 
     const [doctors, setDoctors] = useState([]);
     const [services, setServices] = useState([]);
@@ -24,7 +24,7 @@ const AppointmentRecordForm = ({ entityId }) => {
     const navigate = useNavigate();
 
     const getServiceById = (id) => {
-        return services.find((service) => service.id == id);
+        return services.find((service) => parseInt(service.id) === parseInt(id));
     };
     const parseDurationStrToSec = (duration) => {
         const [hours, minutes, sec] = duration.split(":");
@@ -37,17 +37,17 @@ const AppointmentRecordForm = ({ entityId }) => {
         fetchConsumers().then((data) => setConsumers(data));
         fetchCabinets().then((data) => setCabinets(data));
         if (entityId) {
-            fetch(ENTITY_TO_URL_MAP_GET["appointment_records"] + "/" + entityId)
+            fetch(ENTITY_TO_URL_MAP_GET["appointment_records"] + entityId)
                 .then((res) => res.json())
                 .then((data) => {
-                    setConsumer_id(data.consumer_id);
-                    setDoctor_id(data.doctor_id);
-                    setService_id(data.service_id);
-                    setStart_time(data.start_time);
-                    setEnd_time(data.end_time);
+                    setConsumerId(data.consumer_id);
+                    setDoctorId(data.doctor_id);
+                    setServiceId(data.service_id);
+                    setStartTime(data.start_time);
+                    setEndTime(data.end_time);
                     setPrice(data.price);
                     setState(data.state);
-                    setCabinet_number(data.cabinet_number);
+                    setCabinetNumber(data.cabinet_number);
                 });
         }
     }, [entityId]);
@@ -94,7 +94,7 @@ const AppointmentRecordForm = ({ entityId }) => {
             alert("Время начала не может быть позже времени окончания");
             return;
         }
-        if (cabinets.find((cabinet) => cabinet.number == cabinet_number) == undefined) {
+        if (cabinets.find((cabinet) => parseInt(cabinet.number) === parseInt(cabinet_number)) === undefined) {
             alert("Кабинет с таким номером не существует");
             return;
         }
@@ -113,7 +113,7 @@ const AppointmentRecordForm = ({ entityId }) => {
         }
         console.log(appointmentRecord);
         let method = entityId ? "PUT" : "POST";
-        let URL = entityId ? ENTITY_TO_URL_MAP_POST["appointment_records"] + "/" + entityId : ENTITY_TO_URL_MAP_POST["appointment_records"];
+        let URL = entityId ? ENTITY_TO_URL_MAP_POST["appointment_records"] + entityId : ENTITY_TO_URL_MAP_POST["appointment_records"];
         fetch(URL, {
             method: method,
             headers: {
@@ -123,16 +123,16 @@ const AppointmentRecordForm = ({ entityId }) => {
         })
             .then((response) => {
                 if (response.ok) {
-                    alert("Запись на прием успешно" + (entityId ? "добавлена" : "создана"));
+                    alert("Запись на прием успешно " + (entityId ? "добавлена" : "создана"));
                     navigate("/appointment_records");
                 }
                 else {
-                    alert("Ошибка при" + (entityId ? "добавлении" : "создании") + "записи на прием");
+                    alert("Ошибка при " + (entityId ? "добавлении" : "создании") + " записи на прием");
                 }
             })
             .catch((error) => {
                 console.log(error)
-                alert("Ошибка при" + (entityId ? "добавлении" : "создании") + "записи на прием");
+                alert("Ошибка при " + (entityId ? "добавлении" : "создании") + " записи на прием");
             });
     };
 
@@ -140,7 +140,7 @@ const AppointmentRecordForm = ({ entityId }) => {
         <form onSubmit={handleSubmit}>
             <div className="form-group">
                 <label htmlFor="consumer_id">Пациент</label>
-                <select className="form-control" id="consumer_id" onChange={(e) => setConsumer_id(e.target.value)}>
+                <select className="form-control" id="consumer_id" onChange={(e) => setConsumerId(e.target.value)}>
                     <option hidden value={undefined}>Выберите пациента</option>
                     {consumers.map((consumer) => {
                         return (
@@ -152,7 +152,7 @@ const AppointmentRecordForm = ({ entityId }) => {
             </div>
             <div className="form-group">
                 <label htmlFor="doctor_id">Доктор</label>
-                <select className="form-control" id="doctor_id" onChange={(e) => setDoctor_id(e.target.value)}>
+                <select className="form-control" id="doctor_id" onChange={(e) => setDoctorId(e.target.value)}>
                     <option hidden value={undefined}>Выберите врача</option>
                     {doctors.map((doctor) => {
                         return (
@@ -165,14 +165,22 @@ const AppointmentRecordForm = ({ entityId }) => {
             <div className="form-group">
                 <label htmlFor="service_id">Услуга</label>
                 <select className="form-control" id="service_id" onChange={(e) => {
+                    let tmpServiceId = e.target.value;
+                    let tmpRecPrice = getServiceById(tmpServiceId).price;
+                    setServiceId(tmpServiceId);
+                    if (tmpRecPrice) {
+                        setRecomendedPrice(tmpRecPrice);
+                    }
                     if (start_time) {
                         setRecomendedEndTime(
                             new Date(
-                                new Date(start_time).getTime() + (parseDurationStrToSec(getServiceById(e.target.value)?.default_duration) * 1000) - new Date(start_time).getTimezoneOffset() * 60 * 1000
+                                new Date(start_time).getTime() + (parseDurationStrToSec(getServiceById(tmpServiceId)?.default_duration) * 1000) - new Date(start_time).getTimezoneOffset() * 60 * 1000
                             ).toUTCString()
                         );
                     }
-                    setService_id(e.target.value)
+                    if (!end_time && recomendedEndTime) {
+                        setEndTime(recomendedEndTime);
+                    }
                 }}>
                     <option hidden value={undefined}>Выберите услугу</option>
                     {services.map((service) => {
@@ -185,11 +193,21 @@ const AppointmentRecordForm = ({ entityId }) => {
             </div>
             <div className="form-group">
                 <label htmlFor="start_time">Время начала</label>
-                <input type="datetime-local" className="form-control" id="start_time" onChange={(e) => setStart_time(e.target.value)} />
+                <input type="datetime-local" className="form-control" id="start_time" onChange={(e) => {
+                    let tmpStartTime = e.target.value;
+                    setStartTime(tmpStartTime)
+                    if (service_id) {
+                        setRecomendedEndTime(
+                            new Date(
+                                new Date(tmpStartTime).getTime() + (parseDurationStrToSec(getServiceById(service_id)?.default_duration) * 1000) - new Date(tmpStartTime).getTimezoneOffset() * 60 * 1000
+                            ).toUTCString()
+                        );
+                    }
+                }} />
             </div>
             <div className="form-group">
                 <label htmlFor="end_time">Время окончания</label>
-                <input type="datetime-local" className="form-control" id="end_time" onChange={(e) => setEnd_time(e.target.value)} />
+                <input type="datetime-local" className="form-control" id="end_time" onChange={(e) => setEndTime(e.target.value)} />
                 {recomendedEndTime && <small className="form-text text-muted">Рекомендуемое время окончания: {recomendedEndTime}</small>}
             </div>
             <div className="form-group">
@@ -211,7 +229,7 @@ const AppointmentRecordForm = ({ entityId }) => {
             </div>
             <div className="form-group">
                 <label htmlFor="cabinet_number">Номер кабинета</label>
-                <input type="number" className="form-control" id="cabinet_number" onChange={(e) => setCabinet_number(e.target.value)} />
+                <input type="number" className="form-control" id="cabinet_number" onChange={(e) => setCabinetNumber(e.target.value)} />
             </div>
             <button type="submit" className="btn btn-primary">{entityId ? "Обновить" : "Создать"}</button>
         </form>

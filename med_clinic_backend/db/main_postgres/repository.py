@@ -350,6 +350,17 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         if res:
             return [DoctorServiceWithId(**row) for row in res]
 
+    async def get_doctor_service_by_id(
+        self, doctor_service_id: int
+    ) -> Optional[DoctorServiceWithId]:
+        async with self._connection.acquire() as con:
+            con: asyncpg.Connection
+            res = await con.fetchrow(
+                "SELECT * FROM DoctorServices WHERE id = $1", doctor_service_id
+            )
+        if res:
+            return DoctorServiceWithId(**res)
+
     async def get_doctor_services_by_doctor_id(
         self, doctor_id: int
     ) -> Optional[list[DoctorServiceWithId]]:
@@ -380,6 +391,22 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 """,
                 doctor_service.doctor_id,
                 doctor_service.service_id,
+            )
+
+    async def update_doctor_service(
+        self, doctor_service_id: int, doctor_service: DoctorServiceWithId
+    ) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute(
+                """UPDATE DoctorServices
+                SET
+                    doctor_id = $1,
+                    service_id = $2
+                WHERE id = $3
+                """,
+                doctor_service.doctor_id,
+                doctor_service.service_id,
+                doctor_service_id,
             )
 
     async def delete_doctor_service_by_id(
@@ -422,6 +449,22 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 cabinet.number,
                 cabinet.description,
                 cabinet.departament_id,
+            )
+
+    async def update_cabinet(self, number: int, cabinet: Cabinet) -> str:
+        async with self._connection.acquire() as con:
+            return await con.execute(
+                """UPDATE Cabinets
+                SET
+                    number = $1,
+                    description = $2,
+                    departament_id = $3
+                WHERE number = $4
+                """,
+                cabinet.number,
+                cabinet.description,
+                cabinet.departament_id,
+                number,
             )
 
     async def delete_cabinet(self, number: int) -> str:

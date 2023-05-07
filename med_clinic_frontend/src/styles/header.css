@@ -22,3 +22,12 @@
 .header-link:hover {
     background-color: rgba(190, 255, 255, 0.562);
 }
+
+.active-header-link {
+    background-color: #007bff;
+    color: white;
+}
+
+.active-header-link:hover {
+    background-color: #007bff;
+}

@@ -67,7 +67,7 @@ const DoctorServiceForm = ({ entityId }) => {
         if (entityId) {
             data.id = entityId;
         }
-        let URL = entityId ? ENTITY_TO_URL_MAP_PUT["doctor_services"] : ENTITY_TO_URL_MAP_POST["doctor_services"];
+        let URL = entityId ? ENTITY_TO_URL_MAP_PUT["doctor_services"] + entityId : ENTITY_TO_URL_MAP_POST["doctor_services"];
         let method = entityId ? "PUT" : "POST";
         fetch(URL, {
             method: method,
@@ -80,11 +80,11 @@ const DoctorServiceForm = ({ entityId }) => {
                 alert("Услуга успешно " + (entityId ? "изменена" : "добавлена"));
                 navigate("/doctor_services");
             } else {
-                alert("Ошибка при" + (entityId ? "изменении" : "добавлении") + "услуги");
+                alert("Ошибка при " + (entityId ? "изменении" : "добавлении") + " услуги");
             }
         }).catch((err) => {
             console.log(err);
-            alert("Ошибка при" + (entityId ? "изменении" : "добавлении") + "услуги");
+            alert("Ошибка при " + (entityId ? "изменении" : "добавлении") + " услуги");
         })
     }
 
@@ -92,15 +92,25 @@ const DoctorServiceForm = ({ entityId }) => {
         <form onSubmit={handleSubmit}>
             <div className="form-group">
                 <label htmlFor="doctorId">Доктор</label>
-                <select className="form-control" id="doctorId" onChange={(event) => setDoctorId(event.target.value)}>
-                    <option hidden value={undefined}>Выберите врача</option>
+                <select className="form-control" id="doctorId"
+                    onChange={(event) => setDoctorId(event.target.value)}
+                    defaultValue={doctorId}
+                >
+                    {entityId || <option hidden value={undefined}>Выберите врача</option>}
+                    {entityId && <option value={doctorId}>{doctorId}</option>}
+                    {/* TODO */}
                     {doctorsOptions}
                 </select>
             </div>
             <div className="form-group">
                 <label htmlFor="serviceId">Услуга</label>
-                <select className="form-control" id="serviceId" onChange={(event) => setServiceId(event.target.value)}>
-                    <option hidden value={undefined}>Выберите услугу</option>
+                <select className="form-control" id="serviceId"
+                    defaultValue={serviceId}
+                    onChange={(event) => setServiceId(event.target.value)}
+                    >
+                    {entityId || <option hidden value={undefined}>Выберите услугу</option>}
+                    {entityId && <option value={serviceId}>{serviceId}</option>}
+                    {/* TODO */}
                     {servicesOptions}
                 </select>
             </div>

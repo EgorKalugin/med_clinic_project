@@ -53,7 +53,7 @@ const ServiceForm = ({ entityId }) => {
         if (entityId) {
             data.id = entityId;
         }
-        let URL = entityId ? ENTITY_TO_URL_MAP_PUT["services"] : ENTITY_TO_URL_MAP_POST["services"];
+        let URL = entityId ? ENTITY_TO_URL_MAP_PUT["services"]  + entityId : ENTITY_TO_URL_MAP_POST["services"];
         let method = entityId ? "PUT" : "POST";
         console.log(JSON.stringify(data));
         fetch(URL, {
@@ -64,15 +64,15 @@ const ServiceForm = ({ entityId }) => {
             body: JSON.stringify(data),
         }).then((res) => {
             if (res.ok) {
-                alert("Услуга" + (entityId ? "изменена" : "добавлена"));
+                alert("Услуга " + (entityId ? "изменена" : "добавлена"));
                 navigate("/services");
             } else {
-                alert("Ошибка" + (entityId ? "обновления" : "добавления") + "услуги");
+                alert("Ошибка " + (entityId ? "обновления" : "добавления") + " услуги");
             }
         }
         ).catch((err) => {
             console.log(err);
-            alert("Ошибка" + (entityId ? "обновления" : "добавления") + "услуги");
+            alert("Ошибка " + (entityId ? "обновления" : "добавления") + " услуги");
         });
     }
 
@@ -80,18 +80,30 @@ const ServiceForm = ({ entityId }) => {
         <form onSubmit={handleSubmit}>
             <div className="form-group">
                 <label htmlFor="name">Название услуги</label>
-                <input type="text" className="form-control" id="name" onChange={(event) => setName(event.target.value)} />
+                <input type="text" className="form-control" id="name"
+                    defaultValue={name}
+                    onChange={(event) => setName(event.target.value)}
+                />
             </div>
             <div className="form-group">
                 <label htmlFor="description">Описание услуги</label>
-                <input type="text" className="form-control" id="description" onChange={(event) => setDescription(event.target.value)} />
+                <input type="text" className="form-control" id="description"
+                    defaultValue={description}
+                    onChange={(event) => setDescription(event.target.value)}
+                />
             </div>
             <div className="form-group">
                 <label htmlFor="price">Цена услуги {"(руб)"}</label>
-                <input type="number" className="form-control" id="price" onChange={(event) => setPrice(event.target.value)} />
+                <input type="number" className="form-control" id="price"
+                    defaultValue={price}
+                    onChange={(event) => setPrice(event.target.value)}
+                />
             </div>
             <div className="form-group">
-                <input type="time" className="form-control" id="duration" onChange={(event) => setDefaultDuration(event.target.value)} />
+                <input type="time" className="form-control" id="duration"
+                    defaultValue={defaultDuration}
+                    onChange={(event) => setDefaultDuration(event.target.value)}
+                />
             </div>
             <button type="submit" className="btn-add">{entityId ? "Обновить" : "Создать"}</button>
         </form>
