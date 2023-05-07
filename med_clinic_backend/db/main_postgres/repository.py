@@ -99,7 +99,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
                 appointment.start_time,
                 appointment.end_time,
                 appointment.price,
-                appointment.state,
+                appointment.state.value,
                 appointment.cabinet_number,
                 appointment_id,
             )
