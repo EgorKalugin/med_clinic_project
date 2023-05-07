@@ -32,7 +32,7 @@ const CabinetForm = ({ entityId }) => {
                 }
             }).then((res) => {
                 setNumber(res.number);
-                setDepartmentId(res.department_id);
+                setDepartmentId(res.departament_id);
                 setDescription(res.description);
             }
             ).catch((err) => {
@@ -92,7 +92,7 @@ const CabinetForm = ({ entityId }) => {
             <div className="form-group">
                 <label htmlFor="department">Отделение</label>
                 <select className="form-control" id="department"
-                    defaultValue={departmentId}
+                    value={departmentId}
                     onChange={(event) => setDepartmentId(event.target.value)}>
                     <option value={null}>не указано</option>
                     {departmentsOptions}

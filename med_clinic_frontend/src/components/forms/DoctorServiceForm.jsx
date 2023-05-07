@@ -94,23 +94,19 @@ const DoctorServiceForm = ({ entityId }) => {
                 <label htmlFor="doctorId">Доктор</label>
                 <select className="form-control" id="doctorId"
                     onChange={(event) => setDoctorId(event.target.value)}
-                    defaultValue={doctorId}
+                    value={doctorId}
                 >
-                    {entityId || <option hidden value={undefined}>Выберите врача</option>}
-                    {entityId && <option value={doctorId}>{doctorId}</option>}
-                    {/* TODO */}
+                    {<option hidden value={undefined}>Выберите врача</option>}
                     {doctorsOptions}
                 </select>
             </div>
             <div className="form-group">
                 <label htmlFor="serviceId">Услуга</label>
                 <select className="form-control" id="serviceId"
-                    defaultValue={serviceId}
+                    value={serviceId}
                     onChange={(event) => setServiceId(event.target.value)}
-                    >
-                    {entityId || <option hidden value={undefined}>Выберите услугу</option>}
-                    {entityId && <option value={serviceId}>{serviceId}</option>}
-                    {/* TODO */}
+                >
+                    {<option hidden value={undefined}>Выберите услугу</option>}
                     {servicesOptions}
                 </select>
             </div>

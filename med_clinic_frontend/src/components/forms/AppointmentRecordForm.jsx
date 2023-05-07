@@ -140,7 +140,9 @@ const AppointmentRecordForm = ({ entityId }) => {
         <form onSubmit={handleSubmit}>
             <div className="form-group">
                 <label htmlFor="consumer_id">Пациент</label>
-                <select className="form-control" id="consumer_id" onChange={(e) => setConsumerId(e.target.value)}>
+                <select className="form-control" id="consumer_id"
+                    value={consumer_id}
+                    onChange={(e) => setConsumerId(e.target.value)}>
                     <option hidden value={undefined}>Выберите пациента</option>
                     {consumers.map((consumer) => {
                         return (
@@ -152,7 +154,10 @@ const AppointmentRecordForm = ({ entityId }) => {
             </div>
             <div className="form-group">
                 <label htmlFor="doctor_id">Доктор</label>
-                <select className="form-control" id="doctor_id" onChange={(e) => setDoctorId(e.target.value)}>
+                <select className="form-control" id="doctor_id"
+                    value={doctor_id}
+                    onChange={(e) => setDoctorId(e.target.value)}
+                >
                     <option hidden value={undefined}>Выберите врача</option>
                     {doctors.map((doctor) => {
                         return (
@@ -164,24 +169,26 @@ const AppointmentRecordForm = ({ entityId }) => {
             </div>
             <div className="form-group">
                 <label htmlFor="service_id">Услуга</label>
-                <select className="form-control" id="service_id" onChange={(e) => {
-                    let tmpServiceId = e.target.value;
-                    let tmpRecPrice = getServiceById(tmpServiceId).price;
-                    setServiceId(tmpServiceId);
-                    if (tmpRecPrice) {
-                        setRecomendedPrice(tmpRecPrice);
-                    }
-                    if (start_time) {
-                        setRecomendedEndTime(
-                            new Date(
-                                new Date(start_time).getTime() + (parseDurationStrToSec(getServiceById(tmpServiceId)?.default_duration) * 1000) - new Date(start_time).getTimezoneOffset() * 60 * 1000
-                            ).toUTCString()
-                        );
-                    }
-                    if (!end_time && recomendedEndTime) {
-                        setEndTime(recomendedEndTime);
-                    }
-                }}>
+                <select className="form-control" id="service_id"
+                    value={service_id}
+                    onChange={(e) => {
+                        let tmpServiceId = e.target.value;
+                        let tmpRecPrice = getServiceById(tmpServiceId).price;
+                        setServiceId(tmpServiceId);
+                        if (tmpRecPrice) {
+                            setRecomendedPrice(tmpRecPrice);
+                        }
+                        if (start_time) {
+                            setRecomendedEndTime(
+                                new Date(
+                                    new Date(start_time).getTime() + (parseDurationStrToSec(getServiceById(tmpServiceId)?.default_duration) * 1000) - new Date(start_time).getTimezoneOffset() * 60 * 1000
+                                ).toUTCString()
+                            );
+                        }
+                        if (!end_time && recomendedEndTime) {
+                            setEndTime(recomendedEndTime);
+                        }
+                    }}>
                     <option hidden value={undefined}>Выберите услугу</option>
                     {services.map((service) => {
                         return (
@@ -193,31 +200,42 @@ const AppointmentRecordForm = ({ entityId }) => {
             </div>
             <div className="form-group">
                 <label htmlFor="start_time">Время начала</label>
-                <input type="datetime-local" className="form-control" id="start_time" onChange={(e) => {
-                    let tmpStartTime = e.target.value;
-                    setStartTime(tmpStartTime)
-                    if (service_id) {
-                        setRecomendedEndTime(
-                            new Date(
-                                new Date(tmpStartTime).getTime() + (parseDurationStrToSec(getServiceById(service_id)?.default_duration) * 1000) - new Date(tmpStartTime).getTimezoneOffset() * 60 * 1000
-                            ).toUTCString()
-                        );
-                    }
-                }} />
+                <input type="datetime-local" className="form-control" id="start_time"
+                    defaultValue={start_time}
+                    onChange={(e) => {
+                        let tmpStartTime = e.target.value;
+                        setStartTime(tmpStartTime)
+                        if (service_id) {
+                            setRecomendedEndTime(
+                                new Date(
+                                    new Date(tmpStartTime).getTime() + (parseDurationStrToSec(getServiceById(service_id)?.default_duration) * 1000) - new Date(tmpStartTime).getTimezoneOffset() * 60 * 1000
+                                ).toUTCString()
+                            );
+                        }
+                    }} />
             </div>
             <div className="form-group">
                 <label htmlFor="end_time">Время окончания</label>
-                <input type="datetime-local" className="form-control" id="end_time" onChange={(e) => setEndTime(e.target.value)} />
+                <input type="datetime-local" className="form-control" id="end_time"
+                    defaultValue={end_time}
+                    onChange={(e) => setEndTime(e.target.value)}
+                />
                 {recomendedEndTime && <small className="form-text text-muted">Рекомендуемое время окончания: {recomendedEndTime}</small>}
             </div>
             <div className="form-group">
                 <label htmlFor="price">Цена</label>
-                <input type="number" className="form-control" id="price" onChange={(e) => setPrice(e.target.value)} />
+                <input type="number" className="form-control" id="price"
+                    defaultValue={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                />
                 {recomendedPrice && <small className="form-text text-muted">Рекомендуемая цена: {recomendedPrice}</small>}
             </div>
             <div className="form-group">
                 <label htmlFor="state">Статус</label>
-                <select className="form-control" id="state" onChange={(e) => setState(e.target.value)}>
+                <select className="form-control" id="state"
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                >
                     <option hidden value={undefined}>Выберите статус</option>
                     {Object.values(ScheduleStates).map((state) => {
                         return (
@@ -229,9 +247,12 @@ const AppointmentRecordForm = ({ entityId }) => {
             </div>
             <div className="form-group">
                 <label htmlFor="cabinet_number">Номер кабинета</label>
-                <input type="number" className="form-control" id="cabinet_number" onChange={(e) => setCabinetNumber(e.target.value)} />
+                <input type="number" className="form-control" id="cabinet_number"
+                    defaultValue={cabinet_number}
+                    onChange={(e) => setCabinetNumber(e.target.value)}
+                />
             </div>
-            <button type="submit" className="btn btn-primary">{entityId ? "Обновить" : "Создать"}</button>
+            <button type="submit" className="btn-add">{entityId ? "Обновить" : "Создать"}</button>
         </form>
     );
 }

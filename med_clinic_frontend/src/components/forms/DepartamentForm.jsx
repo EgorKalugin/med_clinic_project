@@ -78,7 +78,7 @@ const DepartamentForm = ({ entityId }) => {
                     onChange={(event) => setDescription(event.target.value)}
                 />
             </div>
-            <button type="submit" className="btn btn-primary">{entityId ? "Обновить" : "Создать"}</button>
+            <button type="submit" className="btn-add">{entityId ? "Обновить" : "Создать"}</button>
         </form>
     );
 }

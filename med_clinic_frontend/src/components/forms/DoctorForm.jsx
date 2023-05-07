@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react"
-import { fetchDepartments } from "../../models/fetch_data";
-import { ENTITY_TO_URL_MAP_GET, ENTITY_TO_URL_MAP_POST, ENTITY_TO_URL_MAP_PUT } from "../../models/entities_mappings";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ENTITY_TO_URL_MAP_GET, ENTITY_TO_URL_MAP_POST, ENTITY_TO_URL_MAP_PUT } from "../../models/entities_mappings";
+import { fetchDepartments } from "../../models/fetch_data";
 
 const DoctorForm = ({ entityId }) => {
     const [firstName, setFirstName] = useState();
@@ -144,11 +144,11 @@ const DoctorForm = ({ entityId }) => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="departamentId">Отделение</label>
-                    <select className="form-control" id="departamentId" placeholder="Отделение" value={departamentId}
-                        defaultValue={departamentId}
+                    <select className="form-control" id="departamentId" placeholder="Отделение"
+                        value={departamentId}
                         onChange={(e) => SetDepartamentId(e.target.value)}
                     >
-                        <option hidden value={undefined} >Выберите отделение</option>
+                        {<option hidden value={undefined} >Выберите отделение</option>}
                         {departmentsOptions}
                     </select>
                 </div>
