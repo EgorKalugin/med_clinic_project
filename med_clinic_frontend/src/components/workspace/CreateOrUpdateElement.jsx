@@ -1,8 +1,10 @@
-import { useNavigate } from "react-router-dom";
-import { entityToCreateForm, translateEntityForAddText } from "../../models/entities_mappings";
+import { useNavigate, useParams } from "react-router-dom";
+import { entityToCreateOrUpdateForm, translateEntityForAddText } from "../../models/entities_mappings";
 import "../../styles/CreateElement.css";
 
-const CreateElement = (props) => {
+const CreateOrUpdateElement = (props) => {
+    let { entityId } = useParams();
+
     const entity = props.entity;
     const navigate = useNavigate();
 
@@ -21,9 +23,9 @@ const CreateElement = (props) => {
                 </div>
                 {renderButton(entity)}
             </div>
-            {entityToCreateForm[entity]}
+            {entityToCreateOrUpdateForm(entity, entityId)}
         </div>
     );
 };
 
-export default CreateElement;
+export default CreateOrUpdateElement;

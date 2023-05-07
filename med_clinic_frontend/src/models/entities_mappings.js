@@ -1,10 +1,10 @@
-import AppointmentRecordForm from "../components/forms/create/AppointmentRecordForm";
-import CabinetForm from "../components/forms/create/CabinetForm";
-import ConsumerForm from "../components/forms/create/ConsumerForm";
-import DepartamentForm from "../components/forms/create/DepartamentForm";
-import DoctorForm from "../components/forms/create/DoctorForm";
-import DoctorServiceForm from "../components/forms/create/DoctorServiceForm";
-import ServiceForm from "../components/forms/create/ServiceForm";
+import AppointmentRecordForm from "../components/forms/AppointmentRecordForm";
+import CabinetForm from "../components/forms/CabinetForm";
+import ConsumerForm from "../components/forms/ConsumerForm";
+import DepartamentForm from "../components/forms/DepartamentForm";
+import DoctorForm from "../components/forms/DoctorForm";
+import DoctorServiceForm from "../components/forms/DoctorServiceForm";
+import ServiceForm from "../components/forms/ServiceForm";
 
 export const entities = [
     "appointment_records",
@@ -28,15 +28,8 @@ export const ENTITY_TO_URL_MAP_GET = {
     "services": BACKEND_URL + "/service/",
 };
 
-export const ENTITY_TO_URL_MAP_POST = {
-    "appointment_records": BACKEND_URL + "/appointment_record/",
-    "cabinets": BACKEND_URL + "/cabinet/",
-    "consumers": BACKEND_URL + "/consumer/",
-    "departments": BACKEND_URL + "/departments/",
-    "doctor_services": BACKEND_URL + "/doctor_service/",
-    "doctors": BACKEND_URL + "/doctor/",
-    "services": BACKEND_URL + "/service/",
-};
+export const ENTITY_TO_URL_MAP_POST = ENTITY_TO_URL_MAP_GET;
+export const ENTITY_TO_URL_MAP_PUT = ENTITY_TO_URL_MAP_GET;
 export const ENTITY_TO_URL_MAP_DELETE = ENTITY_TO_URL_MAP_GET;
 // ======================================================
 
@@ -264,14 +257,25 @@ export const translateEntityFields = (entity, field) => {
     }
 }
 
-export const entityToCreateForm = {
-    "doctors": <DoctorForm />,
-    "cabinets": <CabinetForm />,
-    "consumers": <ConsumerForm />,
-    "departments": <DepartamentForm />,
-    "services": <ServiceForm />,
-    "doctor_services": <DoctorServiceForm />,
-    "appointment_records": <AppointmentRecordForm />,
+export const entityToCreateOrUpdateForm = (entity, entityId = undefined) => {
+    switch (entity) {
+        case "appointment_records":
+            return <AppointmentRecordForm entityId={entityId} />;
+        case "cabinets":
+            return <CabinetForm entityId={entityId} />;
+        case "consumers":
+            return <ConsumerForm entityId={entityId} />;
+        case "departments":
+            return <DepartamentForm entityId={entityId} />;
+        case "doctor_services":
+            return <DoctorServiceForm entityId={entityId} />;
+        case "doctors":
+            return <DoctorForm entityId={entityId} />;
+        case "services":
+            return <ServiceForm entityId={entityId} />;
+        default:
+            return null;
+    }
 }
 
 export const getDoctorFullName = (doctor) => {

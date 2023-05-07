@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { ENTITY_TO_URL_MAP_POST } from "../../../models/entities_mappings";
+import { useEffect, useState } from "react";
+import { ENTITY_TO_URL_MAP_GET, ENTITY_TO_URL_MAP_POST, ENTITY_TO_URL_MAP_PUT } from "../../models/entities_mappings";
 import { useNavigate } from "react-router-dom";
 
-const ConsumerForm = () => {
+const ConsumerForm = ({ entityId }) => {
     const [firstName, setFirstName] = useState();
     const [secondName, SetSecondName] = useState();
     const [lastName, setLastName] = useState();
@@ -13,6 +13,30 @@ const ConsumerForm = () => {
     const [individualSale, setIndividualSale] = useState();
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (entityId) {
+            fetch(ENTITY_TO_URL_MAP_GET["consumers"] + entityId).then((res) => {
+                if (res.ok) {
+                    return res.json();
+                } else {
+                    alert("Ошибка получения пациента");
+                }
+            }).then((res) => {
+                setFirstName(res.first_name);
+                SetSecondName(res.second_name);
+                setLastName(res.last_name);
+                setDateOfBirth(res.date_of_birth);
+                setBio(res.bio);
+                setPhone(res.phone_number);
+                setEmail(res.email);
+                setIndividualSale(res.individual_sale);
+            }).catch((err) => {
+                console.log(err);
+                alert("Ошибка получения пациента");
+            });
+        }
+    }, [entityId]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -34,10 +58,15 @@ const ConsumerForm = () => {
             bio: bio,
             phone_number: phone,
             email: email,
-            individual_sale: individualSale? individualSale : 0,
+            individual_sale: individualSale ? individualSale : 0,
         }
-        fetch(ENTITY_TO_URL_MAP_POST["consumers"], {
-            method: "POST",
+        if (entityId) {
+            data.id = entityId;
+        }
+        let URL = entityId ? ENTITY_TO_URL_MAP_PUT["consumers"] + entityId : ENTITY_TO_URL_MAP_POST["consumers"];
+        let method = entityId ? "PUT" : "POST";
+        fetch(URL, {
+            method: method,
             headers: {
                 "Content-Type": "application/json"
             },
@@ -45,14 +74,14 @@ const ConsumerForm = () => {
         }).then((res) => {
             console.log(res);
             if (res.ok) {
-                alert("Пациент успешно создан");
+                alert("Пациент успешно" + (entityId ? "обновлен" : "создан"));
                 navigate("/consumers");
             } else {
-                alert("Произошла ошибка при создании пациента");
+                alert("Произошла ошибка при" + (entityId ? "обновлении" : "создании") + "пациента");
             }
         }).catch((err) => {
             console.log(err);
-            alert("Произошла ошибка при создании пациента");
+            alert("Произошла ошибка при" + (entityId ? "обновлении" : "создании") + "пациента");
         });
     }
 
@@ -106,7 +135,7 @@ const ConsumerForm = () => {
                     onChange={(e) => setIndividualSale(e.target.value)}
                 />
             </div>
-            <button type="submit" className="btn-add">Создать</button>
+            <button type="submit" className="btn-add">{entityId? "Обновить": "Создать"}</button>
         </form>
     );
 }

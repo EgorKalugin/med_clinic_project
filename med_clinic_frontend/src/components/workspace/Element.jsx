@@ -1,16 +1,19 @@
 import "../../styles/Element.css"
 
 import { ENTITY_TO_URL_MAP_DELETE, getDoctorFullName, translateEntityFields } from "../../models/entities_mappings";
+import { useNavigate } from "react-router-dom";
 
 
 const Element = ({ entity, data, doctorsCahce, servicesCahce }) => {
+
+    let navigate = useNavigate();
 
     const createComponentUpdateDeleteButtons = (entity, id) => {
         return (
             <div className="element-buttons">
                 id: {id}
                 <div className="element-buttons-separator">
-                    <button className="element-button btn-with-margin">Обновить</button>
+                    <button className="element-button btn-with-margin" onClick={() => navigate("/" + entity + "/update/" + id)}>Обновить</button>
                     <button className="element-button" onClick={() => onClickDelete(entity, id)}>Удалить</button>
                 </div>
             </div>
@@ -23,7 +26,6 @@ const Element = ({ entity, data, doctorsCahce, servicesCahce }) => {
         }).catch((e) => {
             alert("Ошибка при удалении");
             alert(e);
-            console.log(response);
         });
     }
 

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ENTITY_TO_URL_MAP_POST } from "../../../models/entities_mappings";
-import { fetchDoctors, fetchServices } from "../../../models/fetch_data";
+import { ENTITY_TO_URL_MAP_GET, ENTITY_TO_URL_MAP_POST, ENTITY_TO_URL_MAP_PUT } from "../../models/entities_mappings";
+import { fetchDoctors, fetchServices } from "../../models/fetch_data";
 
-const DoctorServiceForm = () => {
+const DoctorServiceForm = ({ entityId }) => {
     const [doctorId, setDoctorId] = useState();
     const [serviceId, setServiceId] = useState();
 
@@ -34,7 +34,22 @@ const DoctorServiceForm = () => {
             console.log(err);
         }
         )
-    }, []);
+        if (entityId) {
+            fetch(ENTITY_TO_URL_MAP_GET["doctor_services"] + entityId).then((res) => {
+                if (res.ok) {
+                    return res.json();
+                } else {
+                    alert("Ошибка получения услуги");
+                }
+            }).then((res) => {
+                setDoctorId(res.doctor_id);
+                setServiceId(res.service_id);
+            }).catch((err) => {
+                console.log(err);
+                alert("Ошибка получения услуги");
+            });
+        }
+    }, [entityId]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -49,20 +64,27 @@ const DoctorServiceForm = () => {
             doctor_id: doctorId,
             service_id: serviceId
         }
-        fetch(ENTITY_TO_URL_MAP_POST["doctor_services"], {
-            method: "POST",
+        if (entityId) {
+            data.id = entityId;
+        }
+        let URL = entityId ? ENTITY_TO_URL_MAP_PUT["doctor_services"] : ENTITY_TO_URL_MAP_POST["doctor_services"];
+        let method = entityId ? "PUT" : "POST";
+        fetch(URL, {
+            method: method,
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data),
         }).then((res) => {
             if (res.ok) {
+                alert("Услуга успешно " + (entityId ? "изменена" : "добавлена"));
                 navigate("/doctor_services");
             } else {
-                alert("Ошибка при добавлении");
+                alert("Ошибка при" + (entityId ? "изменении" : "добавлении") + "услуги");
             }
         }).catch((err) => {
             console.log(err);
+            alert("Ошибка при" + (entityId ? "изменении" : "добавлении") + "услуги");
         })
     }
 
@@ -82,7 +104,7 @@ const DoctorServiceForm = () => {
                     {servicesOptions}
                 </select>
             </div>
-            <button type="submit" className="btn-add">Добавить</button>
+            <button type="submit" className="btn-add">{entityId ? "Обновить" : "Добавить"}</button>
         </form>
     )
 }

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { ENTITY_TO_URL_MAP_POST, getConsumerFullName, getDoctorFullName, translateState } from "../../../models/entities_mappings";
-import { fetchCabinets, fetchConsumers, fetchDoctors, fetchServices } from "../../../models/fetch_data";
-import { ScheduleStates } from "../../../models/models.ts";
+import { ENTITY_TO_URL_MAP_GET, ENTITY_TO_URL_MAP_POST, getConsumerFullName, getDoctorFullName, translateState } from "../../models/entities_mappings";
+import { fetchCabinets, fetchConsumers, fetchDoctors, fetchServices } from "../../models/fetch_data";
+import { ScheduleStates } from "../../models/models.ts";
 import { useNavigate } from "react-router-dom";
 
-const AppointmentRecordForm = () => {
+const AppointmentRecordForm = ({ entityId }) => {
     const [consumer_id, setConsumer_id] = useState();
     const [doctor_id, setDoctor_id] = useState();
     const [service_id, setService_id] = useState();
@@ -36,7 +36,21 @@ const AppointmentRecordForm = () => {
         fetchServices().then((data) => setServices(data));
         fetchConsumers().then((data) => setConsumers(data));
         fetchCabinets().then((data) => setCabinets(data));
-    }, []);
+        if (entityId) {
+            fetch(ENTITY_TO_URL_MAP_GET["appointment_records"] + "/" + entityId)
+                .then((res) => res.json())
+                .then((data) => {
+                    setConsumer_id(data.consumer_id);
+                    setDoctor_id(data.doctor_id);
+                    setService_id(data.service_id);
+                    setStart_time(data.start_time);
+                    setEnd_time(data.end_time);
+                    setPrice(data.price);
+                    setState(data.state);
+                    setCabinet_number(data.cabinet_number);
+                });
+        }
+    }, [entityId]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -94,9 +108,14 @@ const AppointmentRecordForm = () => {
             "state": state,
             "cabinet_number": cabinet_number
         };
+        if (entityId) {
+            appointmentRecord["id"] = entityId;
+        }
         console.log(appointmentRecord);
-        fetch(ENTITY_TO_URL_MAP_POST["appointment_records"], {
-            method: "POST",
+        let method = entityId ? "PUT" : "POST";
+        let URL = entityId ? ENTITY_TO_URL_MAP_POST["appointment_records"] + "/" + entityId : ENTITY_TO_URL_MAP_POST["appointment_records"];
+        fetch(URL, {
+            method: method,
             headers: {
                 "Content-Type": "application/json",
             },
@@ -104,16 +123,16 @@ const AppointmentRecordForm = () => {
         })
             .then((response) => {
                 if (response.ok) {
-                    alert("Запись на прием успешно создана");
+                    alert("Запись на прием успешно" + (entityId ? "добавлена" : "создана"));
                     navigate("/appointment_records");
                 }
                 else {
-                    alert("Ошибка при создании записи на прием");
+                    alert("Ошибка при" + (entityId ? "добавлении" : "создании") + "записи на прием");
                 }
             })
             .catch((error) => {
                 console.log(error)
-                alert("Ошибка при создании записи на прием");
+                alert("Ошибка при" + (entityId ? "добавлении" : "создании") + "записи на прием");
             });
     };
 
@@ -194,7 +213,7 @@ const AppointmentRecordForm = () => {
                 <label htmlFor="cabinet_number">Номер кабинета</label>
                 <input type="number" className="form-control" id="cabinet_number" onChange={(e) => setCabinet_number(e.target.value)} />
             </div>
-            <button type="submit" className="btn btn-primary">Создать</button>
+            <button type="submit" className="btn btn-primary">{entityId ? "Обновить" : "Создать"}</button>
         </form>
     );
 }
