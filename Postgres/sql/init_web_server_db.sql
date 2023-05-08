@@ -79,61 +79,53 @@ CREATE TABLE doctor_services(
     service_id INTEGER NOT NULL REFERENCES Services(id)
 );
 
--- Stored Procedures
-CREATE OR REPLACE PROCEDURE set_appointment_record_done_if_time(
-        appointment_record_id Int, end_time TIMESTAMP(0)
-    )
-language plpgsql
-as $$
-begin
-    IF end_time > now()::timestamp THEN
+-- Triggers Functions
+CREATE OR REPLACE FUNCTION set_appointment_record_done_if_time()
+RETURNS trigger AS $trg_appointment_records_time$
+BEGIN
+    IF new.end_time > now()::timestamp THEN
         UPDATE appointment_records
         SET state = 'done'
-        WHERE id = appointment_record_id;
+        WHERE id = new.id;
     END IF;
+    RETURN NULL;
+END;
+$trg_appointment_records_time$ language plpgsql;
 
-    commit;
-end;
-$$;
-
-CREATE OR REPLACE PROCEDURE set_appointment_record_price(
-        appointment_record_id Int,
-        consumer_id Int,
-        service_id Int
-    ) 
-language plpgsql
-as $$
-declare
+CREATE OR REPLACE FUNCTION set_appointment_record_price() 
+RETURNS trigger AS $trg_appointment_records_price$
+DECLARE
     service_price DECIMAL(8,2) := (SELECT price
                                     FROM services
-                                    WHERE id = service_id);
+                                    WHERE id = new.service_id);
 
     appointment_price DECIMAL(8,2) := (SELECT price
                                     FROM appointment_records
-                                    WHERE id = appointment_record_id);
+                                    WHERE id = new.id);
 
-    consumer_sale DECIMAL(1,2) := ((SELECT individual_sale
+    consumer_sale DECIMAL(1,2) := (SELECT individual_sale
                                     FROM Consumers
-                                    WHERE id = consumer_id));
+                                    WHERE id = new.consumer_id);
 
-begin
+BEGIN
     IF appointment_price < service_price * (1-consumer_sale) THEN
         UPDATE appointment_records
         SET PRICE = service_price * (1-consumer_sale)
-        WHERE id = appointment_record_id;
+        WHERE id = new.id;
     END IF;
-
-    commit;
-end;
-$$;
+    RETURN NULL;
+END;
+$trg_appointment_records_price$ language plpgsql;
 
 -- Triggers
-CREATE OR REPLACE TRIGGER trg_appointment_records
+CREATE OR REPLACE TRIGGER trg_appointment_records_time
    AFTER INSERT OR UPDATE ON appointment_records
    FOR EACH ROW
-   BEGIN
-        IF :new.end_time > now() THEN
-            set_appointment_record_done(:new.ID);
-        END IF;
-        set_appointment_record_price(:new.ID, :new.consumer_id,:new.service_id)
+        EXECUTE PROCEDURE set_appointment_record_done_if_time();
+   END;
+
+CREATE OR REPLACE TRIGGER trg_appointment_records_price
+   AFTER INSERT OR UPDATE ON appointment_records
+   FOR EACH ROW
+        EXECUTE PROCEDURE set_appointment_record_price();
    END;
