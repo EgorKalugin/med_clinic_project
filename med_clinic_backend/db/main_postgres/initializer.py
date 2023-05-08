@@ -18,7 +18,7 @@ class MainPostgresInitializer:
         if self._pg_connection_pool is not None:
             await self._pg_connection_pool.close()
 
-    async def _get_postgres_connection(self) -> Pool:
+    async def _get_postgres_connection_pool(self) -> Pool:
         """Create connection pool to postgres database."""
         if self._pg_connection_pool is None:
             self._pg_connection_pool = await create_pool(
@@ -32,7 +32,7 @@ class MainPostgresInitializer:
 
     async def init_main_db_repository(self) -> MainPgDatabaseRepository:
         """Initialize main postgres database for application."""
-        connection_pool = await self._get_postgres_connection()
+        connection_pool = await self._get_postgres_connection_pool()
         main_db_repository = MainPgDatabaseRepository(conn=connection_pool)
         await main_db_repository.check_connection()
         return main_db_repository
