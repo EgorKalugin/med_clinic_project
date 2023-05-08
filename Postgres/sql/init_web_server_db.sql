@@ -56,7 +56,7 @@ CREATE TABLE Doctors(
     date_of_birth TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL
 );
 
-CREATE TABLE AppointmentRecords(
+CREATE TABLE appointment_records(
     id SERIAL NOT NULL PRIMARY KEY,
     consumer_id INTEGER NOT NULL REFERENCES Consumers(id),
     doctor_id INTEGER NOT NULL REFERENCES Doctors(id),

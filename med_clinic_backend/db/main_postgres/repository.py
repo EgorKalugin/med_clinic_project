@@ -29,7 +29,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetch(
-                "SELECT * FROM AppointmentRecords ORDER BY id LIMIT $1 OFFSET $2",
+                "SELECT * FROM appointment_records ORDER BY id LIMIT $1 OFFSET $2",
                 amount,
                 end_cursor,
             )
@@ -42,7 +42,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetch(
-                "SELECT * FROM AppointmentRecords WHERE consumer_id = $1", consumer_id
+                "SELECT * FROM appointment_records WHERE consumer_id = $1", consumer_id
             )
         if res:
             return [AppointmentRecordWithId(**row) for row in res]
@@ -52,7 +52,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     ) -> Optional[AppointmentRecordWithId]:
         async with self._connection.acquire() as con:
             res = await con.fetchrow(
-                "SELECT * FROM AppointmentRecords WHERE id = $1", appointment_id
+                "SELECT * FROM appointment_records WHERE id = $1", appointment_id
             )
         if res:
             return AppointmentRecordWithId(**res)
@@ -60,7 +60,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     async def create_appointment_record(self, appointment: AppointmentRecordWithoutId) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
-                """INSERT INTO AppointmentRecords
+                """INSERT INTO appointment_records
                     (consumer_id, doctor_id, service_id, start_time, end_time, price, state,
                     cabinet_number)
                 VALUES
@@ -81,7 +81,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     ) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
-                """UPDATE AppointmentRecords
+                """UPDATE appointment_records
                 SET
                     consumer_id = $1,
                     doctor_id = $2,
@@ -107,7 +107,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     async def delete_appointment_record_by_id(self, appointment_id: int) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
-                "DELETE FROM AppointmentRecords WHERE id = $1", appointment_id
+                "DELETE FROM appointment_records WHERE id = $1", appointment_id
             )
 
     # ======================================== Consumers ===========================================
