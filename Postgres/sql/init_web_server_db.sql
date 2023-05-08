@@ -64,7 +64,7 @@ CREATE TABLE appointment_records(
     start_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
     end_time TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
     price DECIMAL(8, 2) NOT NULL,
-    state VARCHAR(50) NOT NULL DEFAULT 'not_arrived' CHECK(state IN ('done', 'cancelled', 'in_progress', 'not_arrived')),
+    state VARCHAR(50) NOT NULL DEFAULT 'in_progress' CHECK(state IN ('done', 'cancelled', 'in_progress', 'not_arrived')),
     cabinet_number INTEGER NOT NULL REFERENCES Cabinets(number),
     EXCLUDE USING gist (doctor_id WITH =, tsrange(start_time, end_time) WITH &&),
     EXCLUDE USING gist (consumer_id WITH =, tsrange(start_time, end_time) WITH &&),
@@ -83,7 +83,7 @@ CREATE TABLE doctor_services(
 CREATE OR REPLACE FUNCTION set_appointment_record_done_if_time()
 RETURNS trigger AS $trg_appointment_records_time$
 BEGIN
-    IF new.end_time > now()::timestamp THEN
+    IF (new.end_time > now()::timestamp) AND (new.state = 'in_progress') THEN
         UPDATE appointment_records
         SET state = 'done'
         WHERE id = new.id;
