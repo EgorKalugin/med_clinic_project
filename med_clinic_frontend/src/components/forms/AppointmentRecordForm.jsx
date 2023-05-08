@@ -31,6 +31,10 @@ const AppointmentRecordForm = ({ entityId }) => {
         return parseInt(hours) * 60 * 60 + 60 * parseInt(minutes) + parseInt(sec);
     };
 
+    const getConsumerById = (id) => {
+        return consumers.find((consumer) => parseInt(consumer.id) === parseInt(id));
+    };
+
     useEffect(() => {
         fetchDoctors().then((data) => setDoctors(data));
         fetchServices().then((data) => setServices(data));
@@ -115,7 +119,7 @@ const AppointmentRecordForm = ({ entityId }) => {
         if (entityId) {
             appointmentRecord["id"] = entityId;
         }
-        console.log(appointmentRecord);
+        console.log(JSON.stringify(appointmentRecord));
         let method = entityId ? "PUT" : "POST";
         let URL = entityId ? ENTITY_TO_URL_MAP_POST["appointment_records"] + entityId : ENTITY_TO_URL_MAP_POST["appointment_records"];
         fetch(URL, {
@@ -146,7 +150,13 @@ const AppointmentRecordForm = ({ entityId }) => {
                 <label htmlFor="consumer_id">Пациент</label>
                 <select className="form-control" id="consumer_id"
                     value={consumer_id}
-                    onChange={(e) => setConsumerId(e.target.value)}>
+                    onChange={(e) => {
+                        setConsumerId(e.target.value)
+                        if (recomendedPrice) {
+                            let consumer_sale = getConsumerById(e.target.value).individual_sale;
+                            setRecomendedPrice(recomendedPrice * (1 - consumer_sale));
+                        }
+                    }}>
                     <option hidden value={undefined}>Выберите пациента</option>
                     {consumers.map((consumer) => {
                         return (
@@ -180,6 +190,10 @@ const AppointmentRecordForm = ({ entityId }) => {
                         let tmpRecPrice = getServiceById(tmpServiceId).price;
                         setServiceId(tmpServiceId);
                         if (tmpRecPrice) {
+                            if (consumer_id) {
+                                let consumer_sale = getConsumerById(consumer_id).individual_sale;
+                                tmpRecPrice = tmpRecPrice * (1 - consumer_sale);
+                            }
                             setRecomendedPrice(tmpRecPrice);
                         }
                         if (start_time) {

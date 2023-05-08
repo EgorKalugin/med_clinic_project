@@ -57,11 +57,11 @@ class DoctorServiceWithId(DoctorServiceWithoutId):
 
 
 class ConsumerWithoutId(BaseModel):
-    bio: Optional[str]
-    date_of_birth: Optional[date]
     first_name: str
     second_name: Optional[str]
     last_name: str
+    bio: Optional[str]
+    date_of_birth: Optional[date]
     phone_number: Optional[str]
     email: Optional[str]
     individual_sale: Optional[Decimal]

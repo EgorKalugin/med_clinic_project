@@ -30,7 +30,7 @@ const ConsumerForm = ({ entityId }) => {
                 setBio(res.bio);
                 setPhone(res.phone_number);
                 setEmail(res.email);
-                setIndividualSale(res.individual_sale);
+                setIndividualSale(res.individual_sale * 100);
             }).catch((err) => {
                 console.log(err);
                 alert("Ошибка получения пациента");
@@ -46,7 +46,7 @@ const ConsumerForm = ({ entityId }) => {
         } else if (!lastName) {
             alert("Введите фамилию");
             return;
-        } else if (individualSale < 0 || individualSale > 0.5) {
+        } else if (individualSale < 0 || individualSale > 50) {
             alert("Некорректная скидка");
             return;
         }
@@ -58,7 +58,7 @@ const ConsumerForm = ({ entityId }) => {
             bio: bio,
             phone_number: phone,
             email: email,
-            individual_sale: individualSale ? individualSale : 0,
+            individual_sale: individualSale ? individualSale / 100 : 0,
         }
         if (entityId) {
             data.id = entityId;
@@ -137,7 +137,7 @@ const ConsumerForm = ({ entityId }) => {
                 />
             </div>
             <div className="form-group">
-                <label htmlFor="individual_sales">Индивидуальная скидка {"(от 0 до 0.5)"}</label>
+                <label htmlFor="individual_sales">Индивидуальная скидка {"(от 0 до 50)"}</label>
                 <input type="number" className="form-control" id="individual_sales" placeholder="Индивидуальная скидка"
                     defaultValue={individualSale}
                     onChange={(e) => setIndividualSale(e.target.value)}

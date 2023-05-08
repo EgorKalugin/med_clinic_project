@@ -21,7 +21,7 @@ CREATE TABLE consumers(
     first_name VARCHAR(30) NOT NULL,
     second_name VARCHAR(30) NULL,
     last_name VARCHAR(30) NOT NULL,
-    individual_sale DECIMAL(1, 2) NOT NULL DEFAULT 0 CHECK (individual_sale >= 0 AND individual_sale <= 0.5),
+    individual_sale DECIMAL(2, 2) NOT NULL DEFAULT 0 CHECK (individual_sale >= 0 AND individual_sale <= 0.5),
     phone_number VARCHAR(15) NULL,
     email VARCHAR(255) NULL
 );
@@ -83,7 +83,7 @@ CREATE TABLE doctor_services(
 CREATE OR REPLACE FUNCTION set_appointment_record_done_if_time()
 RETURNS trigger AS $trg_appointment_records_time$
 BEGIN
-    IF (new.end_time > now()::timestamp) AND (new.state = 'in_progress') THEN
+    IF (new.end_time < now()::timestamp) AND (new.state = 'in_progress') THEN
         UPDATE appointment_records
         SET state = 'done'
         WHERE id = new.id;
@@ -103,7 +103,7 @@ DECLARE
                                     FROM appointment_records
                                     WHERE id = new.id);
 
-    consumer_sale DECIMAL(1,2) := (SELECT individual_sale
+    consumer_sale DECIMAL(2,2) := (SELECT individual_sale
                                     FROM Consumers
                                     WHERE id = new.consumer_id);
 

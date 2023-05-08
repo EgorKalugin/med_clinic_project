@@ -25,7 +25,6 @@ const Element = ({ entity, data, doctorsCahce, servicesCahce }) => {
             window.location.reload();
         }).catch((e) => {
             alert("Ошибка при удалении");
-            alert(e);
         });
     }
 
@@ -70,6 +69,7 @@ const Element = ({ entity, data, doctorsCahce, servicesCahce }) => {
                 if (key === "id") return;
                 if (key === "price") value = value + " руб.";
                 if (entity === "appointment_records" && key === "state") return <div key={i} >{translateEntityFields(entity, key)}: {translateState(value)}</div>;
+                if (entity === "consumers" && key === "individual_sale") return <div key={i} >{translateEntityFields(entity, key)}: {value * 100} % </div>;
                 return <div key={i} >{translateEntityFields(entity, key)}: {value}</div>;
             }
             ));

@@ -61,6 +61,7 @@ export const fetchConsumers = async () => {
             date_of_birth: consumer.date_of_birth,
             phone_number: consumer.phone_number,
             email: consumer.email,
+            individual_sale: parseFloat(consumer.individual_sale)? parseFloat(consumer.individual_sale): 0,
         };
     });
     return consumers;
