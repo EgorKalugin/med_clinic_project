@@ -88,7 +88,7 @@ const ElementsPage = (props) => {
 
     useEffect(() => {
         renderElements(entity);
-    }, []);
+    }, [entity]);
 
     return (
         <div id="workspace">

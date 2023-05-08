@@ -14,19 +14,19 @@ SET ROLE :user;
 CREATE EXTENSION btree_gist; -- for EXCLUDE constraint
 
 -- create tables
-CREATE TABLE Consumers(
+CREATE TABLE consumers(
     id SERIAL NOT NULL PRIMARY KEY,
     bio TEXT NULL,
     date_of_birth TIMESTAMP(0) WITHOUT TIME ZONE NULL,
     first_name VARCHAR(30) NOT NULL,
     second_name VARCHAR(30) NULL,
     last_name VARCHAR(30) NOT NULL,
-    individual_sale DECIMAL(8, 2) NOT NULL DEFAULT 0 CHECK (individual_sale >= 0 AND individual_sale <= 0.5),
+    individual_sale DECIMAL(1, 2) NOT NULL DEFAULT 0 CHECK (individual_sale >= 0 AND individual_sale <= 0.5),
     phone_number VARCHAR(15) NULL,
     email VARCHAR(255) NULL
 );
 
-CREATE TABLE Services(
+CREATE TABLE services(
     id SERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(30) NOT NULL,
     description TEXT NULL,
@@ -34,19 +34,19 @@ CREATE TABLE Services(
     default_duration TIME(0) WITHOUT TIME ZONE NOT NULL
 );
 
-CREATE TABLE Departaments(
+CREATE TABLE departaments(
     id SERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT NULL
 );
 
-CREATE TABLE Cabinets(
+CREATE TABLE cabinets(
     number INTEGER NOT NULL PRIMARY KEY,
     description TEXT NULL,
     departament_id INTEGER NULL REFERENCES Departaments(id)
 );
 
-CREATE TABLE Doctors(
+CREATE TABLE doctors(
     id SERIAL NOT NULL PRIMARY KEY,
     departament_id INTEGER NOT NULL REFERENCES Departaments(id),
     bio TEXT NULL,
@@ -73,8 +73,67 @@ CREATE TABLE appointment_records(
     CONSTRAINT price_is_positive CHECK (price >= 0)
 );
 
-CREATE TABLE DoctorServices(
+CREATE TABLE doctor_services(
     id SERIAL NOT NULL PRIMARY KEY,
     doctor_id INTEGER NOT NULL REFERENCES Doctors(id),
     service_id INTEGER NOT NULL REFERENCES Services(id)
 );
+
+-- Stored Procedures
+CREATE OR REPLACE PROCEDURE set_appointment_record_done_if_time(
+        appointment_record_id Int, end_time TIMESTAMP(0)
+    )
+language plpgsql
+as $$
+begin
+    IF end_time > now()::timestamp THEN
+        UPDATE appointment_records
+        SET state = 'done'
+        WHERE id = appointment_record_id;
+    END IF;
+
+    commit;
+end;
+$$;
+
+CREATE OR REPLACE PROCEDURE set_appointment_record_price(
+        appointment_record_id Int,
+        consumer_id Int,
+        service_id Int
+    ) 
+language plpgsql
+as $$
+declare
+    service_price DECIMAL(8,2) := (SELECT price
+                                    FROM services
+                                    WHERE id = service_id);
+
+    appointment_price DECIMAL(8,2) := (SELECT price
+                                    FROM appointment_records
+                                    WHERE id = appointment_record_id);
+
+    consumer_sale DECIMAL(1,2) := ((SELECT individual_sale
+                                    FROM Consumers
+                                    WHERE id = consumer_id));
+
+begin
+    IF appointment_price < service_price * (1-consumer_sale) THEN
+        UPDATE appointment_records
+        SET PRICE = service_price * (1-consumer_sale)
+        WHERE id = appointment_record_id;
+    END IF;
+
+    commit;
+end;
+$$;
+
+-- Triggers
+CREATE OR REPLACE TRIGGER trg_appointment_records
+   AFTER INSERT OR UPDATE ON appointment_records
+   FOR EACH ROW
+   BEGIN
+        IF :new.end_time > now() THEN
+            set_appointment_record_done(:new.ID);
+        END IF;
+        set_appointment_record_price(:new.ID, :new.consumer_id,:new.service_id)
+   END;
