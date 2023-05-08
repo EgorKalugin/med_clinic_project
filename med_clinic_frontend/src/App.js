@@ -9,7 +9,6 @@ function App() {
         <Header />
         <Workspace />
       </div>
-      {/* <Footer /> */}
     </div>
   );
 }

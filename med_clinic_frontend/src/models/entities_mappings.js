@@ -75,68 +75,6 @@ export const translateEntityForAddText = (entity) => {
     }
 }
 
-// export const ENTITY_TO_FIELDS_MAP = {
-//     "appointment_records": [
-//         "id",
-//         "consumer_id",
-//         "doctor_id",
-//         "service_id",
-//         "start_time",
-//         "end_time",
-//         "price",
-//         "state",
-//         "cabinet_number",
-//     ],
-//     "cabinets":
-//         [
-//             "number",
-//             "description",
-//             "departament_id",
-//         ],
-//     "consumers":
-//         [
-//             "id",
-//             "bio",
-//             "date_of_birth",
-//             "first_name",
-//             "second_name",
-//             "last_name",
-//             "phone_number",
-//             "email",
-//             "individual_sale",
-//         ],
-//     "departments":
-//         [
-//             "id",
-//             "name",
-//             "description",
-//         ],
-//     "doctor_services":
-//         [
-//             "id",
-//             "doctor_id",
-//             "service_id",
-//         ],
-//     "doctors":
-//         [
-//             "id",
-//             "departament_id",
-//             "bio",
-//             "first_name",
-//             "second_name",
-//             "last_name",
-//             "date_of_birth",
-//         ],
-//     "services":
-//         [
-//             "id",
-//             "name",
-//             "description",
-//             "price",
-//             "default_duration",
-//         ],
-// };
-
 export const translateEntityFields = (entity, field) => {
     switch (entity) {
         case "appointment_records":
