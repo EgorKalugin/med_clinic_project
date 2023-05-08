@@ -346,7 +346,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     # ===================================== DoctorService =====================================
     async def get_all_doctor_services(self) -> Optional[list[DoctorServiceWithId]]:
         async with self._connection.acquire() as con:
-            res = await con.fetch("SELECT * FROM DoctorServices")
+            res = await con.fetch("SELECT * FROM doctor_services")
         if res:
             return [DoctorServiceWithId(**row) for row in res]
 
@@ -356,7 +356,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetchrow(
-                "SELECT * FROM DoctorServices WHERE id = $1", doctor_service_id
+                "SELECT * FROM doctor_services WHERE id = $1", doctor_service_id
             )
         if res:
             return DoctorServiceWithId(**res)
@@ -366,7 +366,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     ) -> Optional[list[DoctorServiceWithId]]:
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
-            res = await con.fetch("SELECT * FROM DoctorServices WHERE doctor_id = $1", doctor_id)
+            res = await con.fetch("SELECT * FROM doctor_services WHERE doctor_id = $1", doctor_id)
         if res:
             return [DoctorServiceWithId(**row) for row in res]
 
@@ -376,7 +376,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
         async with self._connection.acquire() as con:
             con: asyncpg.Connection
             res = await con.fetchrow(
-                "SELECT * FROM DoctorServices WHERE service_id = $1", service_id
+                "SELECT * FROM doctor_services WHERE service_id = $1", service_id
             )
         if res:
             return DoctorServiceWithId(**res)
@@ -384,7 +384,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     async def create_doctor_service(self, doctor_service: DoctorServiceWithoutId) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
-                """INSERT INTO DoctorServices
+                """INSERT INTO doctor_services
                     (doctor_id, service_id)
                 VALUES
                     ($1, $2)
@@ -398,7 +398,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     ) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
-                """UPDATE DoctorServices
+                """UPDATE doctor_services
                 SET
                     doctor_id = $1,
                     service_id = $2
@@ -415,7 +415,7 @@ class MainPgDatabaseRepository(BasePostgresqlRepository):
     ) -> str:
         async with self._connection.acquire() as con:
             return await con.execute(
-                "DELETE FROM DoctorServices WHERE id = $1",
+                "DELETE FROM doctor_services WHERE id = $1",
                 doctor_service_id,
             )
 
