@@ -1,4 +1,3 @@
-import logging
 from typing import Optional
 
 import asyncpg
@@ -17,8 +16,6 @@ from models.models import (
     DoctorWithoutId,
     ServiceWithId,
 )
-
-logger = logging.getLogger("main")
 
 
 class MainPgDatabaseRepository(BasePostgresqlRepository):
